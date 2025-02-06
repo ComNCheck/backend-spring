@@ -6,11 +6,11 @@ spring:
     name: ComNCheck
   config:
     import:
-      - classpath:/yaml/application-dev.yaml
+      - classpath:/yaml/application-prod.yaml
       - classpath:/yaml/application-local.yaml
   profiles:
     group:
-      setting: local, log
+      setting: prod, log
     active : setting
 
   data:
