@@ -47,4 +47,7 @@ build/
 
 docker-compose.yaml
 
-/src/main/resources/ancient-pipe-447417-i4-755ce59fbf03.json
+#GCP, FIREBASE KEY
+/src/main/resources/gcp
+/src/main/resources/firebase
+

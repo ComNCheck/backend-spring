@@ -23,7 +23,7 @@ spring:
     gcp:
       storage:
         credentials:
-          location: classpath:ancient-pipe-447417-i4-755ce59fbf03.json
+          location: classpath:/gcp/ancient-pipe-447417-i4-755ce59fbf03.json
         project-id: ${PROJECT_ID}
         bucket: ${BUCKET_ID}
 

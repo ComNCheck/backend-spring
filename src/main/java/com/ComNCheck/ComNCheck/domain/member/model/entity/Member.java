@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Getter
@@ -29,6 +30,7 @@ public class Member {
     private String major;
 
     @Column(name = "student_number")
+    @Setter
     private int studentNumber;
 
     @Column(name = "member_role", nullable = false)
@@ -41,6 +43,15 @@ public class Member {
     @Column(name = "check_student_card", nullable = false)
     private boolean checkStudentCard;
 
+    @Column(name = "alarm_major_event", nullable = false)
+    private boolean alarmMajorEvent;
+
+    @Column(name = "alarm_major_notice", nullable = false)
+    private boolean alarmMajorNotice;
+
+    @Column(name = "alarm_employment_notice")
+    private boolean alarmEmploymentNotice;
+
     @Builder
     public Member(Long memberId, String email, String name, String major, int studentNumber, Role role) {
         this.memberId = memberId;
@@ -51,24 +62,38 @@ public class Member {
         this.position = null;
         this.role = role;
         this.checkStudentCard = false;
+        this.alarmMajorNotice = false;
+        this.alarmMajorEvent = false;
+        this.alarmEmploymentNotice = false;
     }
 
-    /*
-    setter code
-    어노테이션으로 안하고 필요한 경우만 setter 설정
-     */
-
-    public void setStudentNumber(int studentNumber) {
-        this.studentNumber = studentNumber;
-    }
     public void updatePosition(String requestPosition) {
         this.position = requestPosition;
     }
     public void updateRole(Role newRole) {
         this.role = newRole;
     }
-    public void changeIsCheckStudentCard() {
-        checkStudentCard = true;
+    public void changeCheckStudentCard() {
+        this.checkStudentCard = true;
     }
+    public void onAlarmMajorEvent() {
+        this.alarmMajorEvent = true;
+    }
+    public void offAlarmMajorEvent() {
+        this.alarmMajorEvent = false;
+    }
+    public void onAlarmMajorNotice() {
+        this.alarmMajorNotice = true;
+    }
+    public void offAlarmMajorNotice() {
+        this.alarmMajorNotice = false;
+    }
+    public void onAlarmEmploymentNotice() {
+        this.alarmEmploymentNotice = true;
+    }
+    public void offAlarmEmploymentNotice() {
+        this.alarmEmploymentNotice = false;
+    }
+
 }
 
