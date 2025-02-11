@@ -42,6 +42,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
 	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-starter', version: '6.0.0'
 	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-storage', version: '6.0.0'
+	implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '4.29.3'
 }
 
 tasks.named('test') {

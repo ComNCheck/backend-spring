@@ -44,7 +44,7 @@ public class RoleChangeController {
     }
 
     @GetMapping
-    @Operation(summary = "학새회 등급 신청 목록 조회", description = "학생회 등급 신청 목록을 조회한다.")
+    @Operation(summary = "학생회 등급 신청 목록 조회", description = "학생회 등급 신청 목록을 조회한다.")
     public ResponseEntity<List<RoleChangeListDTO>> getAllRequest(Authentication authentication) {
         CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long memberId = principal.getMemberDTO().getMemberId();
@@ -71,28 +71,6 @@ public class RoleChangeController {
         Long memberId = principal.getMemberDTO().getMemberId();
         roleChangeRequestService.approveRequest(requestId, memberId);
         return ResponseEntity.ok("승인완료");
-    }
-
-
-    @GetMapping("/approved")
-    @Operation(summary = "승인된 학생회 등급 신청 목록 조회", description = "승인된 학생회 등급 신청 목록을 조회한다.")
-    public ResponseEntity<List<ApprovedRoleListDTO>> getApprovedRequests(Authentication authentication) {
-        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
-        Long memberId = principal.getMemberDTO().getMemberId();
-        List<ApprovedRoleListDTO> approvedList = roleChangeRequestService.getApproveRequests(memberId);
-        return ResponseEntity.ok(approvedList);
-    }
-
-    @PutMapping("/{requestId}/change-role")
-    @Operation(summary = "특정 학생회 등급 조정", description = "승인된 학생회 등급 신청에서 등급을 조정한다.")
-    public ResponseEntity<String> changeMemberRole(
-            @PathVariable Long requestId, @RequestBody RoleChangeRequestDTO requestDTO,
-            Authentication authentication
-    ) {
-        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
-        Long memberId = principal.getMemberDTO().getMemberId();
-        roleChangeRequestService.changeMemberRole(requestId, requestDTO, memberId);
-        return ResponseEntity.ok("등급 재변경 완료");
     }
 
     @DeleteMapping("/{requestId}")

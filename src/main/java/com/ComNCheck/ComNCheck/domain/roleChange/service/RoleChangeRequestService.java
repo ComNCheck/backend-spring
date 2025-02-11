@@ -91,23 +91,6 @@ public class RoleChangeRequestService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public void changeMemberRole(Long requestId, RoleChangeRequestDTO requestDTO, Long memberId) {
-        RoleChange request = roleChangeRequestRepository.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("요청이 없습니다."));
-
-        if(request.getStatus() != RequestStatus.APPROVED) {
-            throw new IllegalArgumentException("한번 변경된 요청만 수정 가능합니다.");
-        }
-
-        Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
-        isCheckRole(member);
-
-        Member updateMember = request.getMember();
-        updateMember.updateRole(requestDTO.getRequestRole());
-        updateMember.updatePosition(requestDTO.getRequestPosition());
-    }
 
     @Transactional
     public void deleteRequest(Long requestId, Long memberId) {

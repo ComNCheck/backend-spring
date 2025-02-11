@@ -3,10 +3,9 @@ package com.ComNCheck.ComNCheck.domain.global.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-
 @ResponseStatus(HttpStatus.FORBIDDEN)
-public class UnauthorizedException extends RuntimeException {
-    public UnauthorizedException(String message) {
+public class ForbiddenException extends RuntimeException {
+    public ForbiddenException(String message) {
         super(message);
     }
 }

@@ -1,10 +1,10 @@
 package com.ComNCheck.ComNCheck.domain.majorQuestion.service;
 
 
+import com.ComNCheck.ComNCheck.domain.global.exception.ForbiddenException;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
-import com.ComNCheck.ComNCheck.domain.global.exception.UnauthorizedException;
 import com.ComNCheck.ComNCheck.domain.majorQuestion.model.dto.request.QuestionRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorQuestion.model.dto.response.QuestionResponseDTO;
 import com.ComNCheck.ComNCheck.domain.majorQuestion.model.entity.Question;
@@ -58,7 +58,7 @@ public class QuestionService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 질문이 존재하지 않습니다."));
 
         if (!question.getWriter().getMemberId().equals(writerId)) {
-            throw new UnauthorizedException("작성자가 아닙니다.");
+            throw new ForbiddenException("작성자가 아닙니다.");
         }
 
         question.updateQuestion(requestDTO.getTitle(), requestDTO.getContent());
@@ -71,7 +71,7 @@ public class QuestionService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 질문이 존재하지 않습니다."));
 
         if(!question.getWriter().getMemberId().equals(writerId)) {
-            throw new UnauthorizedException("작성자가 아닙니다.");
+            throw new ForbiddenException("작성자가 아닙니다.");
         }
         questionRepository.delete(question);
     }

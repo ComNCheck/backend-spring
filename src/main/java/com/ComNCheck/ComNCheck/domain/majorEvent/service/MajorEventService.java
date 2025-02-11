@@ -1,6 +1,7 @@
 package com.ComNCheck.ComNCheck.domain.majorEvent.service;
 
 import com.ComNCheck.ComNCheck.domain.fcm.service.FcmService;
+import com.ComNCheck.ComNCheck.domain.global.exception.ForbiddenException;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request.EventCreateRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request.EventUpdateRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.response.EventListResponseDTO;
@@ -189,8 +190,7 @@ public class MajorEventService {
     public void isCheckRole(Member member) {
         Role checkRole = member.getRole();
         if(checkRole != Role.ROLE_ADMIN && checkRole != Role.ROLE_MAJOR_PRESIDENT && checkRole != Role.ROLE_STUDENT_COUNCIL) {
-            System.out.println("접근 권한이 없음");
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
+            throw new ForbiddenException("접근 권한이 없습니다.");
         }
     }
 }

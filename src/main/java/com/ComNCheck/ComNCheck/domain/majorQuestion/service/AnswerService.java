@@ -1,5 +1,6 @@
 package com.ComNCheck.ComNCheck.domain.majorQuestion.service;
 
+import com.ComNCheck.ComNCheck.domain.global.exception.ForbiddenException;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
@@ -74,7 +75,7 @@ public class AnswerService {
     public void isCheckRole(Member member) {
         Role checkRole = member.getRole();
         if(checkRole != Role.ROLE_ADMIN && checkRole != Role.ROLE_MAJOR_PRESIDENT && checkRole != Role.ROLE_STUDENT_COUNCIL) {
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
+            throw new ForbiddenException("접근 권한이 없습니다.");
         }
     }
 

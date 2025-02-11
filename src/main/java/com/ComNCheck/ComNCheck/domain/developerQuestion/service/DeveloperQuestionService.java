@@ -1,6 +1,7 @@
 package com.ComNCheck.ComNCheck.domain.developerQuestion.service;
 
 
+import com.ComNCheck.ComNCheck.domain.global.exception.ForbiddenException;
 import com.ComNCheck.ComNCheck.domain.member.exception.MemberNotFoundException;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
@@ -8,7 +9,7 @@ import com.ComNCheck.ComNCheck.domain.developerQuestion.model.dto.request.Develo
 import com.ComNCheck.ComNCheck.domain.developerQuestion.model.dto.response.DeveloperQuestionResponseDTO;
 import com.ComNCheck.ComNCheck.domain.developerQuestion.model.entity.DeveloperQuestion;
 import com.ComNCheck.ComNCheck.domain.developerQuestion.repository.DeveloperQuestionRepository;
-import com.ComNCheck.ComNCheck.domain.global.exception.UnauthorizedException;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class DeveloperQuestionService {
                 .orElseThrow(() -> new IllegalArgumentException("질문글을 찾을 수 없습니다."));
 
         if(!developerQuestion.getWriter().getMemberId().equals(writerId))
-            throw new UnauthorizedException("게시글 작성자가 아닙니다.");
+            throw new ForbiddenException("게시글 작성자가 아닙니다.");
 
         developerQuestion.updateDeveloperQuestion(requestDTO.getContent());
         return DeveloperQuestionResponseDTO.of(developerQuestion);
@@ -68,7 +69,7 @@ public class DeveloperQuestionService {
                 .orElseThrow(() -> new IllegalArgumentException("질문글을 찾을 수 없습니다."));
 
         if(!developerQuestion.getWriter().getMemberId().equals(writerId))
-            throw new UnauthorizedException("게시글 작성자가 아닙니다.");
+            throw new ForbiddenException("게시글 작성자가 아닙니다.");
 
         developerQuestionRepository.delete(developerQuestion);
     }
