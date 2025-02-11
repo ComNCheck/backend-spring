@@ -4,6 +4,7 @@ package com.ComNCheck.ComNCheck.domain.developerQuestion.controller;
 import com.ComNCheck.ComNCheck.domain.developerQuestion.model.dto.request.DeveloperQuestionRequestDTO;
 import com.ComNCheck.ComNCheck.domain.developerQuestion.model.dto.response.DeveloperQuestionResponseDTO;
 import com.ComNCheck.ComNCheck.domain.developerQuestion.service.DeveloperQuestionService;
+import com.ComNCheck.ComNCheck.domain.global.exception.MissingAuthenticationException;
 import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
 import io.swagger.v3.oas.annotations.Operation;
 import java.net.URI;
@@ -33,6 +34,9 @@ public class DeveloperQuestionController {
             @RequestBody DeveloperQuestionRequestDTO requestDTO,
             Authentication authentication
             ) {
+        if (authentication == null) {
+            throw new MissingAuthenticationException("인증 정보가 필요합니다.");
+        }
         CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long memberId = principal.getMemberDTO().getMemberId();
         DeveloperQuestionResponseDTO createdDTO = developerQuestionService

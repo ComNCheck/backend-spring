@@ -45,16 +45,16 @@ public class QuestionController {
     }
 
     @GetMapping("/{majorQuestionId}")
-    @Operation(summary = "fAQ 특정 게시글 조회", description = "FAQ의 특정 게시글을 클릭했을 때 자세히 볼 수 있다")
+    @Operation(summary = "FAQ 특정 게시글 조회", description = "FAQ의 특정 게시글을 클릭했을 때 자세히 볼 수 있다")
     public ResponseEntity<QuestionResponseDTO> getQuestion(@PathVariable Long majorQuestionId) {
         QuestionResponseDTO responseDTO = questionService.getQuestion(majorQuestionId);
         return ResponseEntity.ok(responseDTO);
     }
 
     @GetMapping
-    @Operation(summary = "fAQ의 답변이 달린 게시글 목록 조회 공유가 true 인 경우만"
+    @Operation(summary = "FAQ의 답변이 달린 게시글 목록 조회 공유가 true 인 경우만"
             , description = "댓글이 달린 모든 게시글 목록을 조회한다.")
-    public ResponseEntity<List<QuestionResponseDTO>> getAllQuestion() {
+    public ResponseEntity<List<QuestionResponseDTO>> getAnsweredAllQuestions() {
         List<QuestionResponseDTO> questions = questionService.getQuestionsWithAnswer();
         return ResponseEntity.ok(questions);
     }
@@ -88,5 +88,14 @@ public class QuestionController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/all/unanswerd")
+    @Operation(summary = "FAQ 답변이 달리지 않는 게시글 목록 조회", description = "답변을 아직 하지 않느니 게시글 목록을 조회한다.")
+    public ResponseEntity<List<QuestionResponseDTO>> getUnansweredAllQuestions(Authentication authentication) {
+        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
+        Long memberId = principal.getMemberDTO().getMemberId();
+        List<QuestionResponseDTO> questions = questionService.getUnanswerdAllQuestion(memberId);
+        return ResponseEntity.ok(questions);
+
+    }
 
 }

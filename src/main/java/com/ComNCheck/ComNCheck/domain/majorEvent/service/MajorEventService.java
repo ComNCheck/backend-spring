@@ -1,5 +1,6 @@
 package com.ComNCheck.ComNCheck.domain.majorEvent.service;
 
+import com.ComNCheck.ComNCheck.domain.fcm.service.FcmService;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request.EventCreateRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request.EventUpdateRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.response.EventListResponseDTO;
@@ -11,6 +12,7 @@ import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.BlobInfo;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,6 +34,7 @@ public class MajorEventService {
 
     private final MajorEventRepository majorEventRepository;
     private final MemberRepository memberRepository;
+    private final FcmService fcmService;
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
     private final Storage storage;
@@ -59,6 +62,28 @@ public class MajorEventService {
                 .build();
 
         MajorEvent savedMajorEvent = majorEventRepository.save(majorEvent);
+
+        List<Member> members = memberRepository.findByAlarmMajorEventTrue();
+
+        if(!members.isEmpty()) {
+            String title = "공지사항";
+            String body = "새로운 과행사 글이 등록되었습니다.";
+
+            for(Member member : members) {
+                if(!member.getFcmTokens().isEmpty()) {
+                    member.getFcmTokens().forEach(fcmToken -> {
+                        if(fcmToken.isValid() && fcmToken.getToken() != null
+                                && !fcmToken.getToken().isBlank()) {
+                            try {
+                                fcmService.sendMessageToToken(fcmToken.getToken(), title,body);
+                            } catch(FirebaseMessagingException e) {
+                                System.out.println("전송 실패");
+                            }
+                        }
+                    });
+                }
+            }
+        }
         return EventResponseDTO.of(savedMajorEvent);
     }
 

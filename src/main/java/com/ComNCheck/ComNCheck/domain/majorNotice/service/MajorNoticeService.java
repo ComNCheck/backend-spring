@@ -1,11 +1,15 @@
 package com.ComNCheck.ComNCheck.domain.majorNotice.service;
 
+import com.ComNCheck.ComNCheck.domain.fcm.service.FcmService;
 import com.ComNCheck.ComNCheck.domain.global.infrastructure.FastApiClient;
 import com.ComNCheck.ComNCheck.domain.majorNotice.model.dto.response.FastAPIMajorNoticesResponseListDTO;
 import com.ComNCheck.ComNCheck.domain.majorNotice.model.dto.response.MajorNoticeResponseDTO;
 import com.ComNCheck.ComNCheck.domain.majorNotice.model.dto.response.PageMajorNoticeResponseDTO;
 import com.ComNCheck.ComNCheck.domain.majorNotice.model.entity.MajorNotice;
 import com.ComNCheck.ComNCheck.domain.majorNotice.repository.MajorNoticeRepository;
+import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
+import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,6 +27,8 @@ public class MajorNoticeService {
 
     private final FastApiClient fastApiClient;
     private final MajorNoticeRepository majorNoticeRepository;
+    private final MemberRepository memberRepository;
+    private final FcmService fcmService;
 
     @Transactional
     public void syncMajorNotices() {
@@ -49,6 +55,27 @@ public class MajorNoticeService {
         if(!changeMajorNotices.isEmpty()) {
             // fcm 기능 구현
             System.out.println("알림 전송");
+            List<Member> members = memberRepository.findByAlarmMajorNoticeTrue();
+
+            if(!members.isEmpty()) {
+                String title = "전공 공지사항";
+                String body = "새로운 컴퓨터공학부 공지사항 글이 등록되었습니다.";
+
+                for(Member member : members) {
+                    if(!member.getFcmTokens().isEmpty()) {
+                        member.getFcmTokens().forEach(fcmToken -> {
+                            if(fcmToken.isValid() && fcmToken.getToken() != null
+                                    && !fcmToken.getToken().isBlank()) {
+                                try {
+                                    fcmService.sendMessageToToken(fcmToken.getToken(), title,body);
+                                } catch(FirebaseMessagingException e) { // 예외처리 이후 확인
+                                    System.out.println("전송 실패");
+                                }
+                            }
+                        });
+                    }
+                }
+            }
         }
     }
 

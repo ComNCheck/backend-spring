@@ -10,4 +10,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findByAnswerIsNotNull();
     Optional<Question> findByIdAndSharedTrue(Long id);
     List<Question> findByAnswerIsNotNullAndSharedTrue();
+    List<Question> findByAnswerIsNull();
 }

@@ -110,26 +110,28 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional
     public void changeAlarmMajorNotice(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
         if(member.isAlarmMajorNotice()) {
-            member.offAlarmMajorEvent();
+            member.offAlarmMajorNotice();
         }
         else {
-            member.onAlarmMajorEvent();
+            member.onAlarmMajorNotice();
         }
         memberRepository.save(member);
     }
 
+    @Transactional
     public void changeAlarmEmploymentNotice(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
         if(member.isAlarmEmploymentNotice()) {
-            member.offAlarmMajorEvent();
+            member.offAlarmEmploymentNotice();
         }
         else {
-            member.onAlarmMajorEvent();
+            member.onAlarmEmploymentNotice();
         }
         memberRepository.save(member);
     }

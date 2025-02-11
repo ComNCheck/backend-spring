@@ -4,8 +4,10 @@ import com.ComNCheck.ComNCheck.domain.employmentNotice.model.dto.response.FastAP
 import com.ComNCheck.ComNCheck.domain.global.exception.FastApiException;
 import com.ComNCheck.ComNCheck.domain.majorNotice.model.dto.response.FastAPIMajorNoticesResponseListDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.FastApiStudentCardDTO;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -18,17 +20,29 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpHeaders;
+
 @Component
 @RequiredArgsConstructor
 public class FastApiClient {
     private final RestTemplate restTemplate;
 
     private static final String LOCAL = "http://localhost:8000";
-    public static final String TEST_DISTRIBUTION = "http://comncheck.iptime.org:8000";
+    private static final String TEST_DISTRIBUTION = "http://comncheck.iptime.org:8000";
+    @Value("${target.server.ip}")
+    private String PROD_FASTAPI_IP;
 
-    private static final String FAST_API_URL_OCR= TEST_DISTRIBUTION + "/api/v1/compare-and-ocr";
-    private static final String FAST_API_URL_SCRAPE_NOTICE = TEST_DISTRIBUTION + "/api/v1/scrape/notice";
-    private static final String Fast_API_URL_EMPLOYMENT = TEST_DISTRIBUTION + "/api/v1/scrape/employment";
+    private String PROD_FASTAPI;
+    private String FAST_API_URL_OCR;
+    private String FAST_API_URL_SCRAPE_NOTICE;
+    private String Fast_API_URL_EMPLOYMENT;
+
+    @PostConstruct
+    public void init() {
+        PROD_FASTAPI = "http://" + PROD_FASTAPI_IP;
+        FAST_API_URL_OCR= PROD_FASTAPI + "/api/v1/compare-and-ocr";
+        FAST_API_URL_SCRAPE_NOTICE = PROD_FASTAPI + "/api/v1/scrape/notice";
+        Fast_API_URL_EMPLOYMENT = PROD_FASTAPI + "/api/v1/scrape/employment";
+    }
 
     public FastApiStudentCardDTO sendImage(MultipartFile imageFile) {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();

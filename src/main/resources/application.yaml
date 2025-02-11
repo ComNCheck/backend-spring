@@ -24,8 +24,13 @@ spring:
       storage:
         credentials:
           location: classpath:/gcp/ancient-pipe-447417-i4-755ce59fbf03.json
-        project-id: ${PROJECT_ID}
-        bucket: ${BUCKET_ID}
+        project-id: ${GCP_PROJECT_ID}
+        bucket: ${GCP_BUCKET_ID}
+      firestore:
+        project-id: ${FIREBASE_PROJECT_ID}
+        credentials:
+          location: classpath:/firebase/comncheck-firebase-adminsdk-fbsvc-1255c6f2ed.json
+
 
   security:
     oauth2:
@@ -43,3 +48,7 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
   expirationMs: ${JWT_EXPIRATIONMS}
+
+target:
+  server:
+    ip: ${PROD_FASTAPI_IP}

@@ -2,6 +2,7 @@ package com.ComNCheck.ComNCheck.domain.majorQuestion.service;
 
 
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
+import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
 import com.ComNCheck.ComNCheck.domain.global.exception.UnauthorizedException;
 import com.ComNCheck.ComNCheck.domain.majorQuestion.model.dto.request.QuestionRequestDTO;
@@ -80,5 +81,23 @@ public class QuestionService {
                 .stream()
                 .map(QuestionResponseDTO::of)
                 .toList();
+    }
+
+    @Transactional
+    public List<QuestionResponseDTO> getUnanswerdAllQuestion(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+        isCheckRole(member);
+        return questionRepository.findByAnswerIsNull()
+                .stream()
+                .map(QuestionResponseDTO::of)
+                .toList();
+    }
+
+    public void isCheckRole(Member member) {
+        Role checkRole = member.getRole();
+        if(checkRole != Role.ROLE_ADMIN && checkRole != Role.ROLE_MAJOR_PRESIDENT && checkRole != Role.ROLE_STUDENT_COUNCIL) {
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
     }
 }

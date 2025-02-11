@@ -5,7 +5,11 @@ import com.ComNCheck.ComNCheck.domain.employmentNotice.model.dto.response.FastAP
 import com.ComNCheck.ComNCheck.domain.employmentNotice.model.dto.response.PageEmploymentNoticeResponseDTO;
 import com.ComNCheck.ComNCheck.domain.employmentNotice.model.entity.EmploymentNotice;
 import com.ComNCheck.ComNCheck.domain.employmentNotice.repository.EmploymentNoticeRepository;
+import com.ComNCheck.ComNCheck.domain.fcm.service.FcmService;
 import com.ComNCheck.ComNCheck.domain.global.infrastructure.FastApiClient;
+import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
+import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,6 +27,8 @@ public class EmploymentNoticeService {
 
     private final EmploymentNoticeRepository employmentNoticeRepository;
     private final FastApiClient fastApiClient;
+    private final MemberRepository memberRepository;
+    private final FcmService fcmService;
 
     @Transactional
     public void syncEmploymentNotices() {
@@ -50,6 +56,27 @@ public class EmploymentNoticeService {
         if (!changeEmploymentNotices.isEmpty()) {
             // fcm 기능 구현
             System.out.println("알림 전송");
+            List<Member> members = memberRepository.findByAlarmEmploymentNoticeTrue();
+
+            if(!members.isEmpty()) {
+                String title = "취업 공지사항";
+                String body = "새로운 컴퓨터공학부 취업 글이 등록되었습니다.";
+
+                for(Member member : members) {
+                    if(!member.getFcmTokens().isEmpty()) {
+                        member.getFcmTokens().forEach(fcmToken -> {
+                            if(fcmToken.isValid() && fcmToken.getToken() != null
+                                    && !fcmToken.getToken().isBlank()) {
+                                try {
+                                    fcmService.sendMessageToToken(fcmToken.getToken(), title,body);
+                                } catch(FirebaseMessagingException e) { // 예외처리 이후 확인
+                                    System.out.println("전송 실패");
+                                }
+                            }
+                        });
+                    }
+                }
+            }
         }
     }
 

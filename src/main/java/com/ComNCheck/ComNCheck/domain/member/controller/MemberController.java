@@ -66,8 +66,8 @@ public class MemberController {
         return ResponseEntity.ok("과행사 알람 변경");
     }
 
-    @PostMapping("/alarm/major/noticest")
-    @Operation(summary = "과행사 알람 켜기 및 끄기", description = "과행사 알람이 오는 것을 켜거나 끌 수 있다.")
+    @PostMapping("/alarm/major/notices")
+    @Operation(summary = "과공지 알람 켜기 및 끄기", description = "과행사 알람이 오는 것을 켜거나 끌 수 있다.")
     public ResponseEntity<String> changeAlarmMajorNotice(Authentication authentication) {
         CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long memberId = principal.getMemberDTO().getMemberId();
@@ -76,7 +76,7 @@ public class MemberController {
     }
 
     @PostMapping("/alarm/employment/notices")
-    @Operation(summary = "과행사 알람 켜기 및 끄기", description = "과행사 알람이 오는 것을 켜거나 끌 수 있다.")
+    @Operation(summary = "과 취업정보 알람 켜기 및 끄기", description = "과행사 알람이 오는 것을 켜거나 끌 수 있다.")
     public ResponseEntity<String> changeAlarmEmploymentNotice(Authentication authentication) {
         CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long memberId = principal.getMemberDTO().getMemberId();

@@ -16,6 +16,9 @@ public class MemberInformationResponseDTO {
     private int studentNumber;
     private Role role;
     private boolean checkStudentCard;
+    private boolean alarmMajorEvent;
+    private boolean alarmMajorNotice;
+    private boolean alarmEmploymentNotice;
     public static MemberInformationResponseDTO of(Member member) {
         return MemberInformationResponseDTO.builder()
                 .memberId(member.getMemberId())
@@ -24,6 +27,9 @@ public class MemberInformationResponseDTO {
                 .studentNumber(member.getStudentNumber())
                 .role(member.getRole())
                 .checkStudentCard(member.isCheckStudentCard())
+                .alarmMajorEvent(member.isAlarmMajorEvent())
+                .alarmMajorNotice(member.isAlarmMajorNotice())
+                .alarmEmploymentNotice(member.isAlarmEmploymentNotice())
                 .build();
     }
 }

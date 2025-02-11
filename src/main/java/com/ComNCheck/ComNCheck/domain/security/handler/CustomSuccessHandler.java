@@ -35,7 +35,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         boolean checkStudentCard = customMemberDetails.isCheckStudentCard();
         System.out.println(checkStudentCard);
 
-        String token = jwtUtil.createJwt(memberId, username, role, 60 * 60 * 1000L);
+        String token = jwtUtil.createJwt(memberId, username, role,  365L * 24 * 60 * 60 * 1000); // 60 * 60 * 1000L
 
         response.addCookie(createCookie("AccessToken", token));
         if(!checkStudentCard) {

@@ -1,6 +1,9 @@
 package com.ComNCheck.ComNCheck.domain.member.model.entity;
 
+import com.ComNCheck.ComNCheck.domain.fcm.model.entity.FcmToken;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 
 import lombok.Builder;
@@ -52,6 +55,9 @@ public class Member {
     @Column(name = "alarm_employment_notice")
     private boolean alarmEmploymentNotice;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FcmToken> fcmTokens = new ArrayList<>();
+
     @Builder
     public Member(Long memberId, String email, String name, String major, int studentNumber, Role role) {
         this.memberId = memberId;
@@ -72,6 +78,10 @@ public class Member {
     }
     public void updateRole(Role newRole) {
         this.role = newRole;
+    }
+    public void addFcmToken(FcmToken token) {
+        this.fcmTokens.add(token);
+        token.setMember(this);
     }
     public void changeCheckStudentCard() {
         this.checkStudentCard = true;

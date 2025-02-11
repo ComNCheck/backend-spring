@@ -51,3 +51,5 @@ docker-compose.yaml
 /src/main/resources/gcp
 /src/main/resources/firebase
 
+data/
+gradle/
