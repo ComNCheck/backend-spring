@@ -31,7 +31,6 @@ spring:
         credentials:
           location: classpath:/firebase/comncheck-firebase-adminsdk-fbsvc-1255c6f2ed.json
 
-
   security:
     oauth2:
       client:
