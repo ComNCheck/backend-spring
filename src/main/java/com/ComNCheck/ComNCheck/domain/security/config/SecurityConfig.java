@@ -32,7 +32,7 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
-                        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+                        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://com-n-check.vercel.app"));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Arrays.asList("*"));
@@ -49,7 +49,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login/**",
                                 "/oauth2/**",
-                                "/h2-console/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/V3/api-docs",
@@ -72,8 +71,6 @@ public class SecurityConfig {
                                 .userService(customOAuth2MemberService))
                         .successHandler(customSuccessHandler)
                 );
-        // H2 Console 관련 헤더 설정 -> 디비 변경 시 제거
-        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
 
         http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
