@@ -13,6 +13,7 @@ public class EventListResponseDTO {
     private String eventName;
     private LocalDate date;
     private LocalTime time;
+    private String googleFormLink;
 
     public static EventListResponseDTO of(MajorEvent majorEvent) {
         return EventListResponseDTO.builder()
