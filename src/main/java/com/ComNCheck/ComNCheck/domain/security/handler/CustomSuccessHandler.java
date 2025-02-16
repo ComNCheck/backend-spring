@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -46,6 +47,24 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         }
         //response.sendRedirect("http://localhost:3000/login/first");
 
+    }
+
+    public void clearAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        Cookie jsessionCookie = new Cookie("JSESSIONID", null);
+        jsessionCookie.setPath("/");
+        jsessionCookie.setMaxAge(0);
+        response.addCookie(jsessionCookie);
+
+        Cookie accessTokenCookie = new Cookie("AccessToken", null);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setMaxAge(0);
+        response.addCookie(accessTokenCookie);
     }
 
     private Cookie createCookie(String key, String value) {
