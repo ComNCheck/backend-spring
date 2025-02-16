@@ -19,6 +19,7 @@ public class EventUpdateRequestDTO {
     private String location;
     private String notice;
     private String googleFormLink;
+    private String firstImageUrl;
 
     private List<MultipartFile> cardNewsImages;
 
