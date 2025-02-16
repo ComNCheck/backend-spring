@@ -14,12 +14,20 @@ public class EventListResponseDTO {
     private LocalDate date;
     private LocalTime time;
     private String googleFormLink;
+    private String firstImageUrl;
+
 
     public static EventListResponseDTO of(MajorEvent majorEvent) {
+        String firstImage = null;
+        if (majorEvent.getCardNewsImageUrls() != null && !majorEvent.getCardNewsImageUrls().isEmpty()) {
+            firstImage = majorEvent.getCardNewsImageUrls().get(0);
+        }
         return EventListResponseDTO.builder()
                 .eventName(majorEvent.getEventName())
                 .date(majorEvent.getDate())
                 .time(majorEvent.getTime())
+                .googleFormLink(majorEvent.getGoogleFormLink())
+                .firstImageUrl(firstImage)
                 .build();
     }
 }
