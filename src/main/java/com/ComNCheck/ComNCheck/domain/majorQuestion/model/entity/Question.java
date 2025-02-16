@@ -37,25 +37,30 @@ public class Question {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private boolean shared;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
     private Member writer;
 
     @OneToOne(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private Answer answer;
+    @Column
     private LocalDateTime createdAt;
+    @Column
     private LocalDateTime updatedAt;
-
 
     /*
     연관관계 편의 메서드
      */
+
     public void setAnswer(Answer answer) {
         this.answer = answer;
         answer.setQuestion(this);
     }
 
-    public void updateQuestion(String title, String contest) {
+    public void updateQuestion(String title, String content) {
         this.title = title;
         this.content = content;
         this.updatedAt = LocalDateTime.now();

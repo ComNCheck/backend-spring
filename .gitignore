@@ -42,3 +42,16 @@ out/
 hs_err_pid44980.jfr
 hs_err_pid44980.log
 
+
+build/
+
+docker-compose.yaml
+
+#GCP, FIREBASE KEY
+/src/main/resources/gcp
+/src/main/resources/firebase
+
+data/
+gradle/
+
+buildDockerWindow.sh

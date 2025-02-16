@@ -26,21 +26,20 @@ public class CustomOAuthMemberService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        System.out.println( "oAuthUser 정보"+ oAuth2User);
         String email = oAuth2User.getAttribute("email");
         String name = extractName(oAuth2User.getAttribute("name"));
         String major = extractMajor(oAuth2User.getAttribute("name"));
         //String sub = oAuth2User.getAttribute("sub"); 이메일 변경 여부 따지고 변경될경우 findByEmail 대신 findBySub 사용
         String hd = oAuth2User.getAttribute("hd");
 
-        if (!"hufs.ac.kr".equals(hd)) {
-            OAuth2Error oauth2Error = new OAuth2Error(
-                    "invalid_hosted_domain",
-                    "허용되지 않은 호스팅 도메인입니다.",
-                    null
-            );
-            throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString());
-        }
+//        if (!"hufs.ac.kr".equals(hd)) { // 테스트떄는 주석처리 -> 이후 실제 서비스에서는 주석 헤제
+//            OAuth2Error oauth2Error = new OAuth2Error(
+//                    "invalid_hosted_domain",
+//                    "허용되지 않은 호스팅 도메인입니다.",
+//                    null
+//            );
+//            throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString());
+//        }
 
         // 이메일 변경 가능시 sub 변
         Member member = memberRepository.findByEmail(email).orElseGet(() -> {
@@ -49,20 +48,13 @@ public class CustomOAuthMemberService extends DefaultOAuth2UserService {
                     .name(name)
                     .major(major)
                     .role(Role.ROLE_STUDENT)
-                    .studentNumber(12345678)// 난수 변수 값 만드는 메서드 만들어야함
+                    .studentNumber(123456789)
                     .build();
             memberRepository.save(newMember);
             return newMember;
             });
 
-            MemberDTO memberDTO = new MemberDTO();
-            memberDTO.setMemberId(member.getMemberId());
-            memberDTO.setEmail(member.getEmail());
-            memberDTO.setName(member.getName());
-            memberDTO.setMajor(member.getMajor());
-            memberDTO.setRole(member.getRole());
-            memberDTO.setStudentNumber(member.getStudentNumber());
-            return new CustomOAuth2Member(memberDTO);
+            return new CustomOAuth2Member(MemberDTO.of(member));
     }
 
     private String cleanString(String input) {

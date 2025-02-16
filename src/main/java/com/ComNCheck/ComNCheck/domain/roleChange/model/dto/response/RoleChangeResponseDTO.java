@@ -27,6 +27,7 @@ public class RoleChangeResponseDTO {
                 .major(entity.getMember().getMajor())
                 .studentNumber(entity.getMember().getStudentNumber())
                 .position(entity.getRequestPosition())
+                .requestedRole(entity.getRequestRole())
                 .status(entity.getStatus())
                 .build();
     }

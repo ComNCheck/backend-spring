@@ -18,6 +18,7 @@ public class MemberDTO {
     private String major;
     private int studentNumber;
     private Role role;
+    private boolean checkStudentCard;
 
     public MemberDTO() {
     }
@@ -30,6 +31,8 @@ public class MemberDTO {
                 .major(member.getMajor())
                 .studentNumber(member.getStudentNumber())
                 .role(member.getRole())
+                .checkStudentCard(member.isCheckStudentCard())
                 .build();
     }
+
 }

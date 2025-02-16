@@ -8,5 +8,4 @@ import lombok.Setter;
 @Setter
 public class DeveloperQuestionRequestDTO {
     private String content;
-    private Long writerId;
 }

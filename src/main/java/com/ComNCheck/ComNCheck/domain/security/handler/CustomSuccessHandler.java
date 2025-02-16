@@ -26,26 +26,34 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                         Authentication authentication) throws IOException, ServletException {
         CustomOAuth2Member customMemberDetails = (CustomOAuth2Member) authentication.getPrincipal();
 
-        Long userId = customMemberDetails.getMemberDTO().getMemberId();
+        Long memberId = customMemberDetails.getMemberDTO().getMemberId();
         String username = customMemberDetails.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority().toString();
+        boolean checkStudentCard = customMemberDetails.isCheckStudentCard();
+        System.out.println(checkStudentCard);
 
-        String token = jwtUtil.createJwt(userId, username, role, 60*60*60L);
+        String token = jwtUtil.createJwt(memberId, username, role,  365L * 24 * 60 * 60 * 1000); // 60 * 60 * 1000L
 
-        response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("http://localhost:3000/signup?id=" + userId);
+        response.addCookie(createCookie("AccessToken", token));
+        if(!checkStudentCard) {
+            response.sendRedirect("http://localhost:3000/login/first");
+        }
+        else {
+            response.sendRedirect("http://localhost:3000/notice");
+        }
+        //response.sendRedirect("http://localhost:3000/login/first");
 
     }
 
     private Cookie createCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60*60*60);
-        //cookie.setSecure(true);
+        //cookie.setSecure(true); // https에서만 작동
         cookie.setPath("/");
-        //cookie.setHttpOnly(true);
+        cookie.setHttpOnly(true);
 
         return cookie;
     }

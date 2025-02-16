@@ -46,7 +46,7 @@ public class JWTUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .get("username", String.class);
+                .get("name", String.class);
     }
 
     public Role getRole(String token) {

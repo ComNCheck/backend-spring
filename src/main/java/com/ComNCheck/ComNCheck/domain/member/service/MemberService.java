@@ -6,11 +6,14 @@ import com.ComNCheck.ComNCheck.domain.member.model.dto.response.CouncilDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.FastApiStudentCardDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.FastApiStudentCardDTO.ExtractedText;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberDTO;
+import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberInformationResponseDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.PresidentCouncilResponseDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.PresidentDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +29,7 @@ public class MemberService {
     private final FastApiClient fastApiClient;
 
     @Transactional
-    public MemberDTO registerStudentNumber(Long id, MultipartFile studentCardImage) {
+    public MemberInformationResponseDTO registerStudentNumber(Long id, MultipartFile studentCardImage) {
         Member member = memberRepository.findByMemberId(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
         FastApiStudentCardDTO fastApiResponse = fastApiClient.sendImage(studentCardImage);
@@ -41,9 +44,10 @@ public class MemberService {
             throw new ValidationException("이름 또는 전공이 일치하지 않습니다.");
         }
         member.setStudentNumber(studentNumber);
+        member.changeCheckStudentCard();
         Member savedMember = memberRepository.save(member);
 
-        return MemberDTO.of(savedMember);
+        return MemberInformationResponseDTO.of(savedMember);
     }
 
     public PresidentCouncilResponseDTO getPresidentAndCouncils() {
@@ -77,10 +81,58 @@ public class MemberService {
         }
     }
 
-    public MemberDTO getMemberInformation(Long memberId) {
+    public MemberInformationResponseDTO getMemberInformation(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
-        return MemberDTO.of(member);
+        return MemberInformationResponseDTO.of(member);
 
+    }
+
+    public void logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("AccessToken", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        //cookie.setSecure(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+
+    @Transactional
+    public void changeAlarmMajorEvent(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
+        if(member.isAlarmMajorEvent()) {
+            member.offAlarmMajorEvent();
+        }
+        else {
+            member.onAlarmMajorEvent();
+        }
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void changeAlarmMajorNotice(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
+        if(member.isAlarmMajorNotice()) {
+            member.offAlarmMajorNotice();
+        }
+        else {
+            member.onAlarmMajorNotice();
+        }
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void changeAlarmEmploymentNotice(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
+        if(member.isAlarmEmploymentNotice()) {
+            member.offAlarmEmploymentNotice();
+        }
+        else {
+            member.onAlarmEmploymentNotice();
+        }
+        memberRepository.save(member);
     }
 }

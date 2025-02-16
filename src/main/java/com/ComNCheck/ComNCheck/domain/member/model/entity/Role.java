@@ -12,6 +12,7 @@ public enum Role {
     ROLE_STUDENT_COUNCIL("ROLE_STUDENT_COUNCIL"),
     ROLE_STUDENT("ROLE_STUDENT"),
     ROLE_GRADUATE_STUDENT("ROLE_GRADUATE_STUDENT");
+
     private final String value;
 
     Role(String value) {

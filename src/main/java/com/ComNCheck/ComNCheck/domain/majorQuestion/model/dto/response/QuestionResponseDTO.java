@@ -15,12 +15,14 @@ public class QuestionResponseDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private AnswerResponseDTO answer;
+    private boolean shared;
 
     public static QuestionResponseDTO of(Question question) {
         return QuestionResponseDTO.builder()
                 .id(question.getId())
                 .title(question.getTitle())
                 .content(question.getContent())
+                .shared(question.isShared())
                 //.writerId(question.getWriter().getId())
                 .createdAt(question.getCreatedAt())
                 .updatedAt(question.getUpdatedAt())
