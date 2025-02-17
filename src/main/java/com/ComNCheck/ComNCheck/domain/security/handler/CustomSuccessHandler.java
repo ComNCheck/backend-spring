@@ -40,7 +40,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addCookie(createCookie("AccessToken", token));
         if(!checkStudentCard) {
-            response.sendRedirect("https://com-n-check.vercel.app/login/first");
+            response.sendRedirect("https://com-n-check.vercel.app/login/first"); //https://com-n-check.vercel.app
         }
         else {
             response.sendRedirect("https://com-n-check.vercel.app/notice");
@@ -71,7 +71,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60*60*60);
         cookie.setSecure(true); // https에서만 작동
-        cookie.setAttribute("SameSite","None");
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
