@@ -13,6 +13,7 @@ import com.ComNCheck.ComNCheck.domain.majorQuestion.model.entity.Question;
 import com.ComNCheck.ComNCheck.domain.majorQuestion.repository.QuestionRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +46,7 @@ public class QuestionService {
                 .orElseThrow(() -> new MemberNotFoundException("회원이 존재하지 않습니다."));
         isCheckRole(member);
 
-        return questionRepository.findAll()
+        return questionRepository.findAllOrderedByUpdatedAt()
                 .stream()
                 .map(QuestionResponseDTO::of)
                 .toList();

@@ -49,7 +49,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login/**",
                                 "/oauth2/**",
-                                "/h2-console/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/V3/api-docs",
@@ -72,8 +71,6 @@ public class SecurityConfig {
                                 .userService(customOAuth2MemberService))
                         .successHandler(customSuccessHandler)
                 );
-        // H2 Console 관련 헤더 설정 -> 디비 변경 시 제거
-        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
 
         http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
