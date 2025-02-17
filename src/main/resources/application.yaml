@@ -7,7 +7,7 @@ spring:
   config:
     import:
       - classpath:/yaml/application-prod.yaml
-      - classpath:/yaml/application-local.yaml
+      - classpath:/yaml/application-log.yaml
   profiles:
     group:
       setting: prod, log
