@@ -103,14 +103,13 @@ public class MajorEventService {
         LocalDate today = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
 
-        List<MajorEvent> filtered = all.stream()
-                .filter(e -> isNotPassed(e, today, currentTime))
-                .collect(Collectors.toList());
-
-        filtered.sort(Comparator.comparing(MajorEvent::getDate)
+//        List<MajorEvent> filtered = all.stream() // 기간 지난 행사 제외
+//                .filter(e -> isNotPassed(e, today, currentTime))
+//                .collect(Collectors.toList());
+        all.sort(Comparator.comparing(MajorEvent::getDate)
                         .thenComparing(MajorEvent::getTime));
 
-        return filtered.stream()
+        return all.stream()
                 .map(EventListResponseDTO::of)
                 .collect(Collectors.toList());
     }
