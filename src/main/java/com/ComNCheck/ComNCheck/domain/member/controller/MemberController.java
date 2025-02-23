@@ -2,9 +2,12 @@ package com.ComNCheck.ComNCheck.domain.member.controller;
 
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberInformationResponseDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.PresidentCouncilResponseDTO;
+import com.ComNCheck.ComNCheck.domain.member.service.CustomOAuthMemberService;
 import com.ComNCheck.ComNCheck.domain.member.service.MemberService;
+import com.ComNCheck.ComNCheck.domain.security.handler.CustomSuccessHandler;
 import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/member")
 public class MemberController {
     private final MemberService memberService;
+    private final CustomSuccessHandler customSuccessHandler;
 
     @PostMapping("/student/number")
     @Operation(summary = "학번 등록", description = "모바일 학생증으로 학번을 등록한다.")
@@ -52,8 +56,8 @@ public class MemberController {
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "쿠키의 jwt를 강제로 만료시켜 로그아웃 시킨다.")
-    public ResponseEntity<String> logout(HttpServletResponse response) {
-        memberService.logout(response);
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        customSuccessHandler.clearAuthenticationSuccess(request, response);
         return ResponseEntity.ok("로그아웃 성공");
     }
 

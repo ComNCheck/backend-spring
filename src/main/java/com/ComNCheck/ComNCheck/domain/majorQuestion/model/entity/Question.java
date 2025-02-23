@@ -1,6 +1,7 @@
 package com.ComNCheck.ComNCheck.domain.majorQuestion.model.entity;
 
 
+import com.ComNCheck.ComNCheck.domain.majorQuestion.model.dto.request.QuestionRequestDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -60,9 +61,10 @@ public class Question {
         answer.setQuestion(this);
     }
 
-    public void updateQuestion(String title, String content) {
-        this.title = title;
-        this.content = content;
+    public void updateQuestion(QuestionRequestDTO dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+        this.shared = dto.isShared();
         this.updatedAt = LocalDateTime.now();
     }
 

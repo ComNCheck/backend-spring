@@ -1,11 +1,12 @@
 package com.ComNCheck.ComNCheck.domain.member.service;
 
-import com.ComNCheck.ComNCheck.domain.member.exception.ValidationException;
+import com.ComNCheck.ComNCheck.domain.global.exception.FastApiException;
+import com.ComNCheck.ComNCheck.domain.global.exception.MemberNotFoundException;
+import com.ComNCheck.ComNCheck.domain.global.exception.ValidationException;
 import com.ComNCheck.ComNCheck.domain.global.infrastructure.FastApiClient;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.CouncilDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.FastApiStudentCardDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.FastApiStudentCardDTO.ExtractedText;
-import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberInformationResponseDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.PresidentCouncilResponseDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.PresidentDTO;
@@ -31,7 +32,7 @@ public class MemberService {
     @Transactional
     public MemberInformationResponseDTO registerStudentNumber(Long id, MultipartFile studentCardImage) {
         Member member = memberRepository.findByMemberId(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         FastApiStudentCardDTO fastApiResponse = fastApiClient.sendImage(studentCardImage);
         FastApiStudentCardDTO.ExtractedText extractedText = fastApiResponse.getExtractedText();
 
@@ -77,30 +78,22 @@ public class MemberService {
                 extractedText.getName() == null ||
                 extractedText.getMajor() == null ||
                 extractedText.getStudentId() == null) {
-            throw new ValidationException("FastAPI 응답이 유효하지 않습니다.");
+            throw new FastApiException("FastAPI 응답이 유효하지 않습니다.");
         }
     }
 
     public MemberInformationResponseDTO getMemberInformation(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         return MemberInformationResponseDTO.of(member);
 
     }
 
-    public void logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("AccessToken", null);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        //cookie.setSecure(true);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-    }
 
     @Transactional
     public void changeAlarmMajorEvent(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         if(member.isAlarmMajorEvent()) {
             member.offAlarmMajorEvent();
         }
@@ -113,7 +106,7 @@ public class MemberService {
     @Transactional
     public void changeAlarmMajorNotice(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         if(member.isAlarmMajorNotice()) {
             member.offAlarmMajorNotice();
         }
@@ -126,7 +119,7 @@ public class MemberService {
     @Transactional
     public void changeAlarmEmploymentNotice(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         if(member.isAlarmEmploymentNotice()) {
             member.offAlarmEmploymentNotice();
         }

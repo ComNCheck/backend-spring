@@ -2,6 +2,8 @@ package com.ComNCheck.ComNCheck.domain.majorEvent.service;
 
 import com.ComNCheck.ComNCheck.domain.fcm.service.FcmService;
 import com.ComNCheck.ComNCheck.domain.global.exception.ForbiddenException;
+import com.ComNCheck.ComNCheck.domain.global.exception.MemberNotFoundException;
+import com.ComNCheck.ComNCheck.domain.global.exception.PostNotFoundException;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request.EventCreateRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request.EventUpdateRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.response.EventListResponseDTO;
@@ -43,7 +45,7 @@ public class MajorEventService {
     @Transactional
     public EventResponseDTO createMajorEvent(EventCreateRequestDTO requestDTO, Long writerId) {
         Member writer = memberRepository.findByMemberId(writerId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 회원입니다."));
 
         isCheckRole(writer);
 
@@ -90,7 +92,7 @@ public class MajorEventService {
 
     public EventResponseDTO getMajorEvent(Long majorEventId) {
         MajorEvent majorEvent = majorEventRepository.findById(majorEventId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 학부 행사 정보가 없습니다."));
+                .orElseThrow(() -> new PostNotFoundException("요청하신 학부 행사가 없습니다."));
         return EventResponseDTO.of(majorEvent);
     }
 
@@ -101,14 +103,13 @@ public class MajorEventService {
         LocalDate today = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
 
-        List<MajorEvent> filtered = all.stream()
-                .filter(e -> isNotPassed(e, today, currentTime))
-                .collect(Collectors.toList());
-
-        filtered.sort(Comparator.comparing(MajorEvent::getDate)
+//        List<MajorEvent> filtered = all.stream() // 기간 지난 행사 제외
+//                .filter(e -> isNotPassed(e, today, currentTime))
+//                .collect(Collectors.toList());
+        all.sort(Comparator.comparing(MajorEvent::getDate)
                         .thenComparing(MajorEvent::getTime));
 
-        return filtered.stream()
+        return all.stream()
                 .map(EventListResponseDTO::of)
                 .collect(Collectors.toList());
     }
@@ -116,11 +117,11 @@ public class MajorEventService {
     @Transactional
     public EventResponseDTO updateMajorEvent(Long majorEventId, EventUpdateRequestDTO requestDTO, Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         isCheckRole(member);
 
         MajorEvent majorEvent = majorEventRepository.findById(majorEventId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 학부 행사 정보가 없습니다."));
+                .orElseThrow(() -> new PostNotFoundException("요청하신 학부 행사가 없습니다."));
 
         LocalDate eventDate = requestDTO.getParsedDate();
         LocalTime eventTime = requestDTO.getParsedTime();
@@ -144,11 +145,11 @@ public class MajorEventService {
     @Transactional
     public void deleteMajorEvent(Long majorEventId, Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         isCheckRole(member);
 
         MajorEvent majorEvent = majorEventRepository.findById(majorEventId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 학부 행사 정보가 없습니다."));
+                .orElseThrow(() -> new PostNotFoundException("요청하신 학부 행사가 없습니다."));
         majorEventRepository.delete(majorEvent);
     }
 

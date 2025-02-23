@@ -44,6 +44,17 @@ public class QuestionController {
         return ResponseEntity.created(location).body(responseDTO);
     }
 
+    @GetMapping("/all")
+    @Operation(summary = "FAQ 모든 게시글 - 학생회만 열람 가능", description = "댓글 작성 여부, 공개 여부오 상관없는 모든 질문들")
+    public ResponseEntity<List<QuestionResponseDTO>> getAllQuestion(
+            Authentication authentication
+    ) {
+        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
+        Long memberId = principal.getMemberDTO().getMemberId();
+        List<QuestionResponseDTO> questions = questionService.getAllQuestion(memberId);
+        return ResponseEntity.ok(questions);
+    }
+
     @GetMapping("/{majorQuestionId}")
     @Operation(summary = "FAQ 특정 게시글 조회", description = "FAQ의 특정 게시글을 클릭했을 때 자세히 볼 수 있다")
     public ResponseEntity<QuestionResponseDTO> getQuestion(@PathVariable Long majorQuestionId) {

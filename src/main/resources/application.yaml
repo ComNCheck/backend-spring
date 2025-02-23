@@ -7,7 +7,7 @@ spring:
   config:
     import:
       - classpath:/yaml/application-prod.yaml
-      - classpath:/yaml/application-local.yaml
+      - classpath:/yaml/application-log.yaml
   profiles:
     group:
       setting: prod, log
@@ -30,7 +30,6 @@ spring:
         project-id: ${FIREBASE_PROJECT_ID}
         credentials:
           location: classpath:/firebase/comncheck-firebase-adminsdk-fbsvc-1255c6f2ed.json
-
 
   security:
     oauth2:

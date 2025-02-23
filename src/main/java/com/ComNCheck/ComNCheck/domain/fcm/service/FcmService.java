@@ -2,6 +2,7 @@ package com.ComNCheck.ComNCheck.domain.fcm.service;
 
 import com.ComNCheck.ComNCheck.domain.fcm.model.entity.FcmToken;
 import com.ComNCheck.ComNCheck.domain.fcm.repository.FcmRepository;
+import com.ComNCheck.ComNCheck.domain.global.exception.MemberNotFoundException;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -35,7 +36,7 @@ public class FcmService {
     @Transactional
     public void registerFcmToken(Long memberId, String token) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 회원입니다."));
 
         FcmToken existing = fcmRepository.findByToken(token).orElse(null);
         if(existing != null) return; // 학습 후 추가 기능 구현해야함

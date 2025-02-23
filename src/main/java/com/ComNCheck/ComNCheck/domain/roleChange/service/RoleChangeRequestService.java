@@ -1,6 +1,9 @@
 package com.ComNCheck.ComNCheck.domain.roleChange.service;
 
 
+import com.ComNCheck.ComNCheck.domain.global.exception.ApplyNotFoundException;
+import com.ComNCheck.ComNCheck.domain.global.exception.ForbiddenException;
+import com.ComNCheck.ComNCheck.domain.global.exception.MemberNotFoundException;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
 import com.ComNCheck.ComNCheck.domain.roleChange.model.dto.request.RoleChangeRequestDTO;
 import com.ComNCheck.ComNCheck.domain.roleChange.model.dto.response.ApprovedRoleListDTO;
@@ -27,7 +30,7 @@ public class RoleChangeRequestService {
     @Transactional
     public RoleChangeResponseDTO createRoleChangeRequest(Long memberId, RoleChangeRequestDTO requestDTO) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
 
         RoleChange roleChange = RoleChange.builder()
                 .member(member)
@@ -41,7 +44,7 @@ public class RoleChangeRequestService {
 
     public List<RoleChangeListDTO> getAllRequests(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         isCheckRole(member);
 
         List<RoleChange> requests = roleChangeRequestRepository.findAll();
@@ -52,22 +55,22 @@ public class RoleChangeRequestService {
 
     public RoleChangeResponseDTO getRequestDetail(Long requestId, Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         isCheckRole(member);
 
         RoleChange request = roleChangeRequestRepository.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 학생회 신청이 없습니다."));
+                .orElseThrow(() -> new ApplyNotFoundException("등록된 학생회 신청이 없습니다."));
         return RoleChangeResponseDTO.of(request);
     }
 
     @Transactional
     public void approveRequest(Long requestId, Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         isCheckRole(member);
 
         RoleChange request = roleChangeRequestRepository.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 학생회 신청이 없습니다."));
+                .orElseThrow(() -> new ApplyNotFoundException("등록된 학생회 신청이 없습니다."));
 
         request.approve();
 
@@ -79,7 +82,7 @@ public class RoleChangeRequestService {
 
     public List<ApprovedRoleListDTO> getApproveRequests(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         isCheckRole(member);
 
         List<RoleChange> requests = roleChangeRequestRepository.findAll().stream()
@@ -95,18 +98,18 @@ public class RoleChangeRequestService {
     @Transactional
     public void deleteRequest(Long requestId, Long memberId) {
         Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         isCheckRole(member);
 
         RoleChange request = roleChangeRequestRepository.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 학생회 신청이 없습니다."));
+                .orElseThrow(() -> new ApplyNotFoundException("등록된 학생회 신청이 없습니다."));
         roleChangeRequestRepository.delete(request);
     }
 
     public void isCheckRole(Member member) {
         Role checkRole = member.getRole();
         if (checkRole != Role.ROLE_MAJOR_PRESIDENT && checkRole != Role.ROLE_ADMIN) {
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
+            throw new ForbiddenException("접근 권한이 없습니다.");
         }
     }
 
