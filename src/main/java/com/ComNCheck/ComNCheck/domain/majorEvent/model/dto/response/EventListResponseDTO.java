@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class EventListResponseDTO {
+    private Long id;
     private String eventName;
     private LocalDate date;
     private LocalTime time;
@@ -23,6 +24,7 @@ public class EventListResponseDTO {
             firstImage = majorEvent.getCardNewsImageUrls().get(0);
         }
         return EventListResponseDTO.builder()
+                .id(majorEvent.getMajorEventId())
                 .eventName(majorEvent.getEventName())
                 .date(majorEvent.getDate())
                 .time(majorEvent.getTime())
