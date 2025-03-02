@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -38,12 +39,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String token = jwtUtil.createJwt(memberId, username, role,  365L * 24 * 60 * 60 * 1000); // 60 * 60 * 1000L
 
-        response.addCookie(createCookie("AccessToken", token));
+        ResponseCookie cookie = createCookie("AccessToken", token);
+        response.setHeader("Set-Cookie", cookie.toString());
+        //response.addCookie(createCookie("AccessToken", token)); // Cookie로 했을때
         if(!checkStudentCard) {
-            response.sendRedirect("https://com-n-check.vercel.app/login/first"); //https://com-n-check.vercel.app
+            response.sendRedirect("https://www.comncheck.com/login/first"); //https://com-n-check.vercel.app
         }
         else {
-            response.sendRedirect("https://com-n-check.vercel.app//notice");
+            response.sendRedirect("https://www.comncheck.com/notice");
         }
         //response.sendRedirect("http://localhost:3000/login/first");
 
@@ -67,15 +70,27 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addCookie(accessTokenCookie);
     }
 
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-//        cookie.setMaxAge(60*60*60);
-//        cookie.setSecure(true); // https에서만 작동
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
+    private ResponseCookie createCookie(String key, String value) {
+        return ResponseCookie.from(key, value)
+                .maxAge(60 * 60 * 60)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
+                .domain("com-n-check.vercel.app")
+                .httpOnly(true)
+                .build();
     }
+
+//    private Cookie createCookie(String key, String value) {
+//        Cookie cookie = new Cookie(key, value);
+//        cookie.setMaxAge(60 * 60 * 60);
+//        cookie.setSecure(true);
+//        cookie.setHttpOnly(true);
+//        cookie.setPath("/");
+//        cookie.setDomain("com-n-check.vercel.app");
+//        cookie.setAttribute("SameSite", "None");
+//        return cookie;
+//    }
 
 }
 
