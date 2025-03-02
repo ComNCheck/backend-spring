@@ -11,7 +11,7 @@ public class CorsMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
                 .exposedHeaders("Set-Cookie")
-                .allowedOrigins("https://com-n-check.vercel.app")
+                .allowedOrigins("https://www.comncheck.com")
                 .allowedMethods("*")
                 .allowCredentials(true);
     }

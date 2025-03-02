@@ -43,10 +43,10 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setHeader("Set-Cookie", cookie.toString());
         //response.addCookie(createCookie("AccessToken", token)); // Cookie로 했을때
         if(!checkStudentCard) {
-            response.sendRedirect("https://com-n-check.vercel.app/login/first"); //https://com-n-check.vercel.app
+            response.sendRedirect("https://www.comncheck.com/login/first"); //https://com-n-check.vercel.app
         }
         else {
-            response.sendRedirect("https://com-n-check.vercel.app//notice");
+            response.sendRedirect("https://www.comncheck.com/notice");
         }
         //response.sendRedirect("http://localhost:3000/login/first");
 
