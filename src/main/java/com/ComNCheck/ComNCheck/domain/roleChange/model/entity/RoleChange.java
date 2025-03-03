@@ -39,6 +39,7 @@ public class RoleChange {
     private String requestPosition;
 
     @Column(name = "request_role", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role requestRole;
 
     @Builder

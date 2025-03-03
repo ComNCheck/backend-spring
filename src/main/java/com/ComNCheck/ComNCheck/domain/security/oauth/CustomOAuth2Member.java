@@ -38,5 +38,8 @@ public class CustomOAuth2Member implements OAuth2User {
         return memberDTO.getName();
     }
 
+    public boolean isCheckStudentCard() {
+        return memberDTO.isCheckStudentCard();
+    }
 
 }

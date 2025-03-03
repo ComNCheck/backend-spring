@@ -32,12 +32,12 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
-                        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+                        configuration.setAllowedOrigins(Arrays.asList("http://r-cube.iptime.org:3000"));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Arrays.asList("*"));
                         configuration.setMaxAge(3600L);
-                        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
+                        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "AccessToken"));
                         return configuration;
                     }
                 }))
@@ -49,14 +49,13 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login/**",
                                 "/oauth2/**",
-                                "/h2-console/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/V3/api-docs",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
-                                "/webjars/**"
-                                //"/api/v1/**"
+                                "/webjars/**",
+                                "/api/v1/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -72,9 +71,6 @@ public class SecurityConfig {
                                 .userService(customOAuth2MemberService))
                         .successHandler(customSuccessHandler)
                 );
-        System.out.println("시큐리티config");
-        // H2 Console 관련 헤더 설정 -> 디비 변경 시 제거
-        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
 
         http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
