@@ -76,7 +76,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .secure(true)
                 .sameSite("None")
                 .path("/")
-                .domain("com-n-check.vercel.app")
+                .domain("www.comncheck.com")
                 .httpOnly(true)
                 .build();
     }
