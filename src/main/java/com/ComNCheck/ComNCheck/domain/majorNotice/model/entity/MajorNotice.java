@@ -1,6 +1,5 @@
 package com.ComNCheck.ComNCheck.domain.majorNotice.model.entity;
 
-import com.ComNCheck.ComNCheck.domain.employmentNotice.model.dto.response.EmploymentNoticeResponseDTO;
 import com.ComNCheck.ComNCheck.domain.majorNotice.model.dto.response.MajorNoticeResponseDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
