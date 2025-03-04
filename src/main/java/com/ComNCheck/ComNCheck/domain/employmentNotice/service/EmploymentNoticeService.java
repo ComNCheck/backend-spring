@@ -12,7 +12,6 @@ import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -88,8 +87,8 @@ public class EmploymentNoticeService {
     }
 
     public PageEmploymentNoticeResponseDTO getEmploymentNoticesPage(int page, int size) {
-        List<EmploymentNotice> allEmploymentNotices = employmentNoticeRepository.findAll();
-        allEmploymentNotices.sort(Comparator.comparing(EmploymentNotice::getDate).reversed());
+        List<EmploymentNotice> allEmploymentNotices = employmentNoticeRepository.findAllOrderedById();
+
 
         long totalElements = allEmploymentNotices.size();
         int totalPages = (int) Math.ceil((double) totalElements / size);
