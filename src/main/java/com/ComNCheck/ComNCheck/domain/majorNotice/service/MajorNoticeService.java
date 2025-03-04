@@ -87,8 +87,8 @@ public class MajorNoticeService {
     }
 
     public PageMajorNoticeResponseDTO getMajorNoticesPage(int page, int size) {
-        List<MajorNotice> allNotices = majorNoticeRepository.findAll();
-        allNotices.sort(Comparator.comparing(MajorNotice::getDate).reversed());
+        List<MajorNotice> allNotices = majorNoticeRepository.findAllOrderedById();
+
 
         long totalElements = allNotices.size();
         int totalPages = (int) Math.ceil((double) totalElements / size);
