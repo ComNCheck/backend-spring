@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class AnswerRequestDTO {
     private String content;
-    private Long questionId;
+    private Long majorQuestionId;
 
 }

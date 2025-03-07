@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class AnswerResponseDTO {
-    private Long id;
+    private Long answerId;
     private String content;
     private Long questionId;
     private Long writerId;
@@ -17,7 +17,7 @@ public class AnswerResponseDTO {
 
     public static AnswerResponseDTO of(Answer answer) {
         return AnswerResponseDTO.builder()
-                .id(answer.getId())
+                .answerId(answer.getId())
                 .content(answer.getContent())
                 .questionId(answer.getQuestion().getId())
                 .writerId(answer.getWriter().getMemberId())
