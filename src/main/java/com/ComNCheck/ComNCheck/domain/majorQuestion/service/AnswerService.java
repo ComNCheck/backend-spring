@@ -33,7 +33,7 @@ public class AnswerService {
                 .orElseThrow(() -> new MemberNotFoundException("해당 회원이 존재하지 않습니다."));
         isCheckRole(writer);
 
-        Question question = questionRepository.findById(requestDTO.getQuestionId())
+        Question question = questionRepository.findById(requestDTO.getMajorQuestionId())
                 .orElseThrow(() -> new PostNotFoundException("요청하신 질문이 존재하지 않습니다."));
 
         Answer answer = answerRepository.findByQuestionId(question.getId()).orElse(null);
