@@ -10,7 +10,7 @@ import lombok.Getter;
 public class AnswerResponseDTO {
     private Long answerId;
     private String content;
-    private Long questionId;
+    private Long majorQuestionId;
     private Long writerId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -19,7 +19,7 @@ public class AnswerResponseDTO {
         return AnswerResponseDTO.builder()
                 .answerId(answer.getId())
                 .content(answer.getContent())
-                .questionId(answer.getQuestion().getId())
+                .majorQuestionId(answer.getQuestion().getId())
                 .writerId(answer.getWriter().getMemberId())
                 .createdAt(answer.getCreatedAt())
                 .updatedAt(answer.getUpdatedAt())
