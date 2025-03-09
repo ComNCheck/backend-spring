@@ -1,6 +1,7 @@
 package com.ComNCheck.ComNCheck.domain.majorQuestion.controller;
 
 import com.ComNCheck.ComNCheck.domain.majorQuestion.model.dto.request.AnswerRequestDTO;
+import com.ComNCheck.ComNCheck.domain.majorQuestion.model.dto.request.AnswerUpdateRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorQuestion.model.dto.response.AnswerResponseDTO;
 import com.ComNCheck.ComNCheck.domain.majorQuestion.service.AnswerService;
 import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
@@ -34,12 +35,12 @@ public class AnswerController {
     @Operation(summary = "FAQ 댓글 수정", description = "학생회권한만 댓글 작성자의 관계없이 댓글 수정이 가능하다.")
     public ResponseEntity<AnswerResponseDTO> updateAnswer(
             @PathVariable Long answerId,
-            @RequestBody AnswerRequestDTO answerRequestDTO,
+            @RequestBody AnswerUpdateRequestDTO answerUpdateRequestDTO,
             Authentication authentication
     ) {
         CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long writerId = principal.getMemberDTO().getMemberId();
-        AnswerResponseDTO responseDTO = answerService.updateAnswer(answerId, answerRequestDTO.getContent(), writerId);
+        AnswerResponseDTO responseDTO = answerService.updateAnswer(answerId, answerUpdateRequestDTO.getContent(), writerId);
         return ResponseEntity.ok(responseDTO);
     }
 

@@ -38,7 +38,7 @@ public class QuestionController {
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{majorQuestionId}")
-                .buildAndExpand(responseDTO.getId())
+                .buildAndExpand(responseDTO.getMajorQuestionId())
                 .toUri();
 
         return ResponseEntity.created(location).body(responseDTO);
