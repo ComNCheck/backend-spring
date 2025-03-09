@@ -106,6 +106,23 @@ public class RoleChangeRequestService {
         roleChangeRequestRepository.delete(request);
     }
 
+    @Transactional
+    public RoleChangeResponseDTO updateRoleChange(Long requestId, Long memberId, String updatePosition, Role updateRole) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
+        isCheckRole(member);
+
+        RoleChange role = roleChangeRequestRepository.findById(requestId)
+                .orElseThrow(() -> new ApplyNotFoundException("등록된 학생회 신청이 없습니다."));
+
+        role.update(updatePosition, updateRole);
+        Member updateMember = role.getMember();
+        updateMember.updateRole(role.getRequestRole());
+        updateMember.updatePosition(role.getRequestPosition());
+
+        return RoleChangeResponseDTO.of(role);
+    }
+
     public void isCheckRole(Member member) {
         Role checkRole = member.getRole();
         if (checkRole != Role.ROLE_MAJOR_PRESIDENT && checkRole != Role.ROLE_ADMIN) {
