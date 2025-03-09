@@ -54,5 +54,10 @@ public class RoleChange {
         this.status = RequestStatus.APPROVED;
     }
 
+    public void update(String requestPosition, Role requestRole) {
+        this.requestPosition = requestPosition;
+        this.requestRole = requestRole;
+    }
+
 
 }
