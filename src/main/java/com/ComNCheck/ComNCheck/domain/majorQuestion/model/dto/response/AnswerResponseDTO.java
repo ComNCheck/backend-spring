@@ -8,18 +8,18 @@ import lombok.Getter;
 @Getter
 @Builder
 public class AnswerResponseDTO {
-    private Long id;
+    private Long answerId;
     private String content;
-    private Long questionId;
+    private Long majorQuestionId;
     private Long writerId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public static AnswerResponseDTO of(Answer answer) {
         return AnswerResponseDTO.builder()
-                .id(answer.getId())
+                .answerId(answer.getId())
                 .content(answer.getContent())
-                .questionId(answer.getQuestion().getId())
+                .majorQuestionId(answer.getQuestion().getId())
                 .writerId(answer.getWriter().getMemberId())
                 .createdAt(answer.getCreatedAt())
                 .updatedAt(answer.getUpdatedAt())

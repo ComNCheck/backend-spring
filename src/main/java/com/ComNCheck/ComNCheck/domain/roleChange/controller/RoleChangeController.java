@@ -2,6 +2,7 @@ package com.ComNCheck.ComNCheck.domain.roleChange.controller;
 
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
 import com.ComNCheck.ComNCheck.domain.roleChange.model.dto.request.RoleChangeRequestDTO;
+import com.ComNCheck.ComNCheck.domain.roleChange.model.dto.request.RoleChangeUpdateRequestDTO;
 import com.ComNCheck.ComNCheck.domain.roleChange.model.dto.response.ApprovedRoleListDTO;
 import com.ComNCheck.ComNCheck.domain.roleChange.model.dto.response.RoleChangeListDTO;
 import com.ComNCheck.ComNCheck.domain.roleChange.model.dto.response.RoleChangeResponseDTO;
@@ -81,6 +82,19 @@ public class RoleChangeController {
         Long memberId = principal.getMemberDTO().getMemberId();
         roleChangeRequestService.deleteRequest(requestId, memberId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{requestId}")
+    @Operation(summary  = "특정 학생회 직책이나 등급을 변경", description = "과회장이 특정 학생회 인원의 직책이나 등급을 변경한다")
+    public ResponseEntity<RoleChangeResponseDTO> putRoleChange(@PathVariable Long requestId,
+                                                               @RequestBody RoleChangeUpdateRequestDTO roleChangeUpdateRequestDTO,
+                                                               Authentication authentication) {
+        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
+        Long memberId = principal.getMemberDTO().getMemberId();
+        String updatePosition = roleChangeUpdateRequestDTO.getRequestPosition();
+        Role updateRole = roleChangeUpdateRequestDTO.getRequestRole();
+        RoleChangeResponseDTO responseDTO = roleChangeRequestService.updateRoleChange(requestId, memberId, updatePosition, updateRole);
+        return ResponseEntity.ok(responseDTO);
     }
 
 }
