@@ -106,8 +106,11 @@ public class MajorEventService {
 //        List<MajorEvent> filtered = all.stream() // 기간 지난 행사 제외
 //                .filter(e -> isNotPassed(e, today, currentTime))
 //                .collect(Collectors.toList());
-        all.sort(Comparator.comparing(MajorEvent::getDate)
-                        .thenComparing(MajorEvent::getTime));
+        all.sort(
+                Comparator
+                        .comparing(MajorEvent::getDate, Comparator.reverseOrder())  // 날짜 내림차순
+                        .thenComparing(MajorEvent::getTime, Comparator.reverseOrder()) // 시간 내림차순
+        );
 
         return all.stream()
                 .map(EventListResponseDTO::of)
