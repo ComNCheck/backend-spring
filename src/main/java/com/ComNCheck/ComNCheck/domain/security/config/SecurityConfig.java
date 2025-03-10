@@ -70,6 +70,9 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(customOAuth2MemberService))
                         .successHandler(customSuccessHandler)
+                        .failureHandler(new CustomFailureHandler(
+                                "http://r-cube.iptime.org:3000/login?error=invalid_domain"
+                        ))
                 );
 
         http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
