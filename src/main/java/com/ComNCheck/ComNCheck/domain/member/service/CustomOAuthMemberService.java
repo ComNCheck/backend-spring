@@ -32,7 +32,7 @@ public class CustomOAuthMemberService extends DefaultOAuth2UserService {
         //String sub = oAuth2User.getAttribute("sub"); 이메일 변경 여부 따지고 변경될경우 findByEmail 대신 findBySub 사용
         String hd = oAuth2User.getAttribute("hd");
 
-        if (!"hufs.ac.kr".equals(hd) && !"comncheck0306@gmail.com".equals(email)) {
+        if (!"hufs.ac.kr".equals(hd) && !"comncheck0306@gmail.com".equals(email) && !"another0306@gmail.com".equals(email)) {
             OAuth2Error oauth2Error = new OAuth2Error(
                     "invalid_hosted_domain",
                     "허용되지 않은 호스팅 도메인입니다.",
