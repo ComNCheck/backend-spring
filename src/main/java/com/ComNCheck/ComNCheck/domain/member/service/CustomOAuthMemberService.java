@@ -32,14 +32,14 @@ public class CustomOAuthMemberService extends DefaultOAuth2UserService {
         //String sub = oAuth2User.getAttribute("sub"); 이메일 변경 여부 따지고 변경될경우 findByEmail 대신 findBySub 사용
         String hd = oAuth2User.getAttribute("hd");
 
-//        if (!"hufs.ac.kr".equals(hd)) { // 테스트떄는 주석처리 -> 이후 실제 서비스에서는 주석 헤제
-//            OAuth2Error oauth2Error = new OAuth2Error(
-//                    "invalid_hosted_domain",
-//                    "허용되지 않은 호스팅 도메인입니다.",
-//                    null
-//            );
-//            throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString());
-//        }
+        if (!"hufs.ac.kr".equals(hd) && !"comncheck0306@gmail.com".equals(email)) {
+            OAuth2Error oauth2Error = new OAuth2Error(
+                    "invalid_hosted_domain",
+                    "허용되지 않은 호스팅 도메인입니다.",
+                    null
+            );
+            throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString());
+        }
 
         // 이메일 변경 가능시 sub 변
         Member member = memberRepository.findByEmail(email).orElseGet(() -> {
