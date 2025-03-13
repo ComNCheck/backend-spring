@@ -39,7 +39,7 @@ public class MajorEvent {
     @Column(name = "time", nullable = false)
     private LocalTime time;
 
-    @Column(name = "localtion", nullable = false)
+    @Column(name = "location", nullable = false)
     private String location;
 
     @Column(name = "notice", nullable = false, columnDefinition = "TEXT")
