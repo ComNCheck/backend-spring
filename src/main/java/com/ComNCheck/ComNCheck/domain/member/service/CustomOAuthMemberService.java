@@ -21,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomOAuthMemberService extends DefaultOAuth2UserService {
     private final MemberRepository memberRepository;
 
+    private final static String ADMIN_EMAIL_1 = "comncheck0306@gmail.com";
+    private final static String ADMIN_EMAIL_2 = "another0306@gmail.com";
+
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -32,16 +35,16 @@ public class CustomOAuthMemberService extends DefaultOAuth2UserService {
         //String sub = oAuth2User.getAttribute("sub"); 이메일 변경 여부 따지고 변경될경우 findByEmail 대신 findBySub 사용
         String hd = oAuth2User.getAttribute("hd");
 
-        if (!"hufs.ac.kr".equals(hd) && !"comncheck0306@gmail.com".equals(email)) {
+        if (!isAllowedUser(email, hd)) {
             OAuth2Error oauth2Error = new OAuth2Error(
                     "invalid_hosted_domain",
-                    "허용되지 않은 호스팅 도메인입니다.",
-                    null
+                    "허용되지 않은 호스팅 도메인 혹은 계정입니다.",
+                    "https://www.comncheck.com/login?error=invalid_domain"
             );
             throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString());
         }
 
-        // 이메일 변경 가능시 sub 변
+        // 이메일 변경 가능시 sub 변수
         Member member = memberRepository.findByEmail(email).orElseGet(() -> {
             Member newMember = Member.builder()
                     .email(email)
@@ -52,9 +55,18 @@ public class CustomOAuthMemberService extends DefaultOAuth2UserService {
                     .build();
             memberRepository.save(newMember);
             return newMember;
-            });
+        });
 
-            return new CustomOAuth2Member(MemberDTO.of(member));
+        return new CustomOAuth2Member(MemberDTO.of(member));
+    }
+
+    private boolean isAllowedUser(String email, String hd) {
+        if ("hufs.ac.kr".equals(hd)
+                || ADMIN_EMAIL_1.equals(email)
+                || ADMIN_EMAIL_2.equals(email)) {
+            return true;
+        }
+        return false;
     }
 
     private String cleanString(String input) {
