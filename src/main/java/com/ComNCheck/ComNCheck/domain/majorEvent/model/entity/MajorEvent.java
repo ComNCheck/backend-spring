@@ -42,7 +42,7 @@ public class MajorEvent {
     @Column(name = "localtion", nullable = false)
     private String location;
 
-    @Column(name = "notice", nullable = false)
+    @Column(name = "notice", nullable = false, columnDefinition = "TEXT")
     private String notice;
 
     @Column(name = "google_form_link")
