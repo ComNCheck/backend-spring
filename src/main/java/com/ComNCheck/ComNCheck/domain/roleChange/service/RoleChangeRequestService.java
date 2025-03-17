@@ -47,7 +47,7 @@ public class RoleChangeRequestService {
                 .orElseThrow(() -> new MemberNotFoundException("등록된 회원이 없습니다."));
         isCheckRole(member);
 
-        List<RoleChange> requests = roleChangeRequestRepository.findAll();
+        List<RoleChange> requests = roleChangeRequestRepository.findAllOrderByIdDesc();
         return requests.stream()
                 .map(RoleChangeListDTO::of)
                 .collect(Collectors.toList());
