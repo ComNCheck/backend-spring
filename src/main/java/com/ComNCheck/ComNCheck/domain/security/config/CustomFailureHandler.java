@@ -19,6 +19,7 @@ public class CustomFailureHandler extends SimpleUrlAuthenticationFailureHandler 
             HttpServletResponse response, 
             AuthenticationException exception
     ) throws IOException, ServletException {
+
         super.onAuthenticationFailure(request, response, exception);
     }
 }
