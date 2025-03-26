@@ -14,13 +14,20 @@ import java.util.List;
 public class EventUpdateRequestDTO {
 
     private String eventName;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
-    @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime time;
+    private String date;
+    private String time;
     private String location;
     private String notice;
     private String googleFormLink;
+    private String firstImageUrl;
 
     private List<MultipartFile> cardNewsImages;
+
+    public LocalDate getParsedDate() {
+        return date != null ? LocalDate.parse(date) : null;
+    }
+
+    public LocalTime getParsedTime() {
+        return time != null ? LocalTime.parse(time) : null;
+    }
 }

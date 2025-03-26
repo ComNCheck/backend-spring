@@ -2,9 +2,9 @@ package com.ComNCheck.ComNCheck.domain.security.filter;
 
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
-import com.ComNCheck.ComNCheck.domain.security.exception.TokenExpiredException;
 import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
 import com.ComNCheck.ComNCheck.domain.security.util.JWTUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -12,13 +12,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
@@ -34,8 +34,7 @@ public class JWTFilter extends OncePerRequestFilter {
             "/webjars/**",
             "/login/**",
             "/oauth2/**",
-            "/h2-console/**"
-            //"api/v1/**"
+            "api/v1/**"
     };
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
@@ -61,45 +60,59 @@ public class JWTFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("Authorization".equals(cookie.getName())) { // 쿠키 이름 확인
+                if ("AccessToken".equals(cookie.getName())) {
                     token = cookie.getValue();
-                    logger.debug("Found Authorization cookie: " + token);
+                    logger.debug("AccessToken 쿠키를 찾았습니다: " + token);
                     break;
                 }
             }
         }
 
         try {
-            if (token != null) {
-                if (jwtUtil.isExpired(token)) {
-                    throw new TokenExpiredException("만료된 토큰입니다.");
-                }
-
-                String username = jwtUtil.getUsername(token);
-                Long id = jwtUtil.getId(token);
-                Role role = jwtUtil.getRole(token);
-
-                MemberDTO memberDTO = new MemberDTO();
-                memberDTO.setMemberId(id);
-                memberDTO.setName(username);
-                memberDTO.setRole(role);
-
-                CustomOAuth2Member customOAuth2Member = new CustomOAuth2Member(memberDTO);
-
-                Authentication authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                customOAuth2Member,
-                                null,
-                                customOAuth2Member.getAuthorities()
-                        );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-                logger.debug("SecurityContext set with user: " + username);
-            } else {
-                logger.debug("No JWT token found in cookies.");
+            if (token == null || token.trim().isEmpty()) {
+                logger.error("AccessToken 쿠키가 존재하지 않습니다.");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"error\": \"MISSING_TOKEN\", \"message\": \"AccessToken 쿠키가 존재하지 않습니다.\"}");
+                response.getWriter().flush();
+                return;
             }
+
+            String username = jwtUtil.getUsername(token);
+            Long id = jwtUtil.getId(token);
+            Role role = jwtUtil.getRole(token);
+
+            MemberDTO memberDTO = new MemberDTO();
+            memberDTO.setMemberId(id);
+            memberDTO.setName(username);
+            memberDTO.setRole(role);
+
+            CustomOAuth2Member customOAuth2Member = new CustomOAuth2Member(memberDTO);
+
+            Authentication authToken = new UsernamePasswordAuthenticationToken(
+                    customOAuth2Member,
+                    null,
+                    customOAuth2Member.getAuthorities()
+            );
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            logger.debug("SecurityContext에 사용자 정보를 설정했습니다: " + username);
+
+        } catch (ExpiredJwtException e) {
+            logger.error("토큰 만료: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"error\": \"TOKEN_EXPIRED\", \"message\": \"" + e.getMessage() + "\"}");
+            response.getWriter().flush();
+            return;
         } catch (Exception e) {
-            logger.error("Authentication error: " + e.getMessage());
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            logger.error("인증 오류: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"error\": \"AUTHENTICATION_ERROR\", \"message\": \"" + e.getMessage() + "\"}");
+            response.getWriter().flush();
             return;
         }
 

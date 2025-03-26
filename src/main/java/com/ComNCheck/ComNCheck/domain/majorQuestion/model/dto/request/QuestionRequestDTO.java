@@ -8,6 +8,5 @@ import lombok.Setter;
 public class QuestionRequestDTO {
     private String title;
     private String content;
-    private Long writerId;
-
+    private boolean shared;
 }

@@ -14,5 +14,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByRole(Role role);
 
     List<Member> findAllByRole(Role role);
+    List<Member> findByAlarmMajorNoticeTrue();
+    List<Member> findByAlarmEmploymentNoticeTrue();
+    List<Member> findByAlarmMajorEventTrue();
 
 }

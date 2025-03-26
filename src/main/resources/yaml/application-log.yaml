@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: log
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        highlight_sql: true
+
+logging.level:
+  org.hibernate:
+    type: trace
+    orm:
+      jdbc:
+        bind: trace

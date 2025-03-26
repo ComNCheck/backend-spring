@@ -39,6 +39,7 @@ public class RoleChange {
     private String requestPosition;
 
     @Column(name = "request_role", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role requestRole;
 
     @Builder
@@ -51,6 +52,11 @@ public class RoleChange {
 
     public void approve() {
         this.status = RequestStatus.APPROVED;
+    }
+
+    public void update(String requestPosition, Role requestRole) {
+        this.requestPosition = requestPosition;
+        this.requestRole = requestRole;
     }
 
 

@@ -23,21 +23,26 @@ repositories {
 	mavenCentral()
 }
 
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-	implementation 'io.github.cdimascio:java-dotenv:5.2.2' // .env 파일
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'mysql:mysql-connector-java:8.0.33'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.google.firebase:firebase-admin:8.1.0'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-starter', version: '6.0.0'
+	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-storage', version: '6.0.0'
+	implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '4.29.3'
 }
 
 tasks.named('test') {

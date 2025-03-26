@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RoleChangeRequestDTO {
-    private Long memberId;
     private String name;
     private int studentNumber;
     private String major;
