@@ -49,7 +49,7 @@ public class AnotherEvent {
     private String googleFormLink;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "event_card_news_images", joinColumns = @JoinColumn(name = "event_id"))
+    @CollectionTable(name = "anotehr_event_card_news_images", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "image_url")
     private List<String> cardNewsImageUrls = new ArrayList<>();
 
