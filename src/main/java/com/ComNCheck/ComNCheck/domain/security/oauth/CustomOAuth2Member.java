@@ -9,7 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @RequiredArgsConstructor
-public class CustomOAuth2Member implements OAuth2User {
+public class
+CustomOAuth2Member implements OAuth2User {
     private final MemberDTO memberDTO;
 
     public MemberDTO getMemberDTO() {

@@ -40,7 +40,7 @@ public class SecurityConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+                configuration.setAllowedOrigins(Arrays.asList("https://www.comncheck.com"));
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowCredentials(true);
                 configuration.setAllowedHeaders(Arrays.asList("*"));
@@ -73,7 +73,6 @@ public class SecurityConfig {
         http.oauth2Login(oauth2 -> oauth2
                 .authorizationEndpoint(authorization -> authorization
                         .baseUri("/oauth2/authorize")
-                        // ★ 커스텀 AuthorizationRequestResolver 등록
                         .authorizationRequestResolver(customAuthorizationRequestResolver())
                 )
                 .redirectionEndpoint(redirection -> redirection
@@ -83,7 +82,7 @@ public class SecurityConfig {
                         userInfoEndpointConfig.userService(customOAuth2MemberService)
                 )
                 .successHandler(customSuccessHandler)
-                .failureHandler(new CustomFailureHandler("http://localhost:3000/login?error=invalid_domain"))
+                .failureHandler(new CustomFailureHandler("https://www.comncheck.com/login?error=invalid_domain"))
         );
 
         http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
@@ -95,7 +94,6 @@ public class SecurityConfig {
     public OAuth2AuthorizationRequestResolver customAuthorizationRequestResolver() {
         DefaultOAuth2AuthorizationRequestResolver defaultResolver =
                 new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorize");
-
         return new CustomAuthorizationRequestResolver(defaultResolver);
     }
 }
