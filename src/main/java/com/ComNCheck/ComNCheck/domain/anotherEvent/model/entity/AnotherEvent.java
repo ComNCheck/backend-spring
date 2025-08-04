@@ -1,4 +1,4 @@
-package com.ComNCheck.ComNCheck.domain.majorEvent.model.entity;
+package com.ComNCheck.ComNCheck.domain.anotherEvent.model.entity;
 
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import jakarta.persistence.CollectionTable;
@@ -11,24 +11,24 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class MajorEvent {
-
+public class AnotherEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long majorEventId;
+    private Long anotherEventId;
 
     @Column(name = "event_name", nullable = false)
     private String eventName;
@@ -49,7 +49,7 @@ public class MajorEvent {
     private String googleFormLink;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "event_card_news_images", joinColumns = @JoinColumn(name = "event_id"))
+    @CollectionTable(name = "another_event_card_news_images", joinColumns = @JoinColumn(name = "another_event_id"))
     @Column(name = "image_url")
     private List<String> cardNewsImageUrls = new ArrayList<>();
 
@@ -58,9 +58,9 @@ public class MajorEvent {
     private Member writer;
 
     @Builder
-    public MajorEvent(Member writer, String eventName, LocalDate date, LocalTime time,
-                 String location, String notice, String googleFormLink,
-                 List<String> cardNewsImageUrls) {
+    public AnotherEvent(Member writer, String eventName, LocalDate date, LocalTime time,
+                        String location, String notice, String googleFormLink,
+                        List<String> cardNewsImageUrls) {
         this.writer = writer;
         this.eventName = eventName;
         this.date = date;
@@ -87,9 +87,4 @@ public class MajorEvent {
         this.cardNewsImageUrls.clear();
         this.cardNewsImageUrls.addAll(newImageUrls);
     }
-
-
-
-
-
 }
