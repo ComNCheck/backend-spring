@@ -49,6 +49,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(EventChecklistException.class)
+    public ResponseEntity<String> handleEventChecklistException(EventChecklistException ex){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(EventException.class)
+    public ResponseEntity<String> handleEventException(EventException ex){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
 
     public static class ErrorResponse {
         private int status;
