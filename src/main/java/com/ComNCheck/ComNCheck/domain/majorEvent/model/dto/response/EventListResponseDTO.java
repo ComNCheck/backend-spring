@@ -4,6 +4,8 @@ package com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.response;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.MajorEvent;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -24,12 +26,24 @@ public class EventListResponseDTO {
             firstImage = majorEvent.getCardNewsImageUrls().get(0);
         }
         return EventListResponseDTO.builder()
-                .id(majorEvent.getMajorEventId())
+                .id(majorEvent.getId())
                 .eventName(majorEvent.getEventName())
-                .date(majorEvent.getDate())
+//                .date(majorEvent.getDate())
                 .time(majorEvent.getTime())
                 .googleFormLink(majorEvent.getGoogleFormLink())
                 .firstImageUrl(firstImage)
                 .build();
     }
+
+    @Getter
+    @Builder
+    public static class EventByYearResponseDTO{
+        Long majorEventId;
+        String eventName;
+        LocalDate date;
+        String location;
+        String notice;
+        private List<String> cardNewsImageUrls;
+    }
+
 }
