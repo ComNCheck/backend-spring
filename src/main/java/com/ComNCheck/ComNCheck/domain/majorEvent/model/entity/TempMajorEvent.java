@@ -3,23 +3,27 @@ package com.ComNCheck.ComNCheck.domain.majorEvent.model.entity;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.EventType;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.*;
-
+@Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
-public class MajorEvent {
+public class TempMajorEvent {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "writer_id", nullable = false)
+    private Member writer;
 
     @Column(name = "event_name", nullable = false)
     private String eventName;
@@ -37,10 +41,7 @@ public class MajorEvent {
     @Column(name = "year", nullable = false)
     private int year;
 
-//    @Column(name = "date", nullable = false)
-//    private LocalDate date;
-
-    @Column(name = "time", nullable = false)
+    @Column(name = "time")
     private LocalTime time;
 
     @Column(name = "location", nullable = false)
@@ -53,66 +54,51 @@ public class MajorEvent {
     private String googleFormLink;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "event_card_news_images", joinColumns = @JoinColumn(name = "event_id"))
+    @CollectionTable(name = "temp_event_card_news_images", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "image_url")
     @Builder.Default
     private List<String> cardNewsImageUrls = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "writer_id")
-    private Member writer;
-
-//    @Builder
-//    public MajorEvent(Member writer, String eventName, EventType category, LocalDate startDate, LocalDate endDate, LocalDate date, LocalTime time,
-//                 String location, String notice, String googleFormLink,
-//                 List<String> cardNewsImageUrls) {
-//        this.writer = writer;
-//        this.eventName = eventName;
-//        this.category = category;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.date = date;
-//        this.time = time;
-//        this.location = location;
-//        this.notice = notice;
-//        this.googleFormLink = googleFormLink;
-//        if (cardNewsImageUrls != null) {
-//            this.cardNewsImageUrls = cardNewsImageUrls;
-//        }
-//    }
 
     public void update(
             String eventName,
             EventType category,
             LocalDate startDate,
             LocalDate endDate,
-//            LocalDate date,
             LocalTime time,
             String location,
             String notice,
             String googleFormLink,
-            List<String> finalImageUrls
-
+            List<String> cardNewsImageUrls
     ) {
         this.eventName = eventName;
         this.category = category;
-        this.startDate = startDate;
         this.endDate = endDate;
-//        this.date = date;
         this.time = time;
         this.location = location;
         this.notice = notice;
         this.googleFormLink = googleFormLink;
-        this.cardNewsImageUrls = finalImageUrls;
+        this.cardNewsImageUrls = cardNewsImageUrls;
 
+        // startDate가 변경되면, year도 함께 변경하여 데이터 정합성을 유지합니다.
         if (startDate != null) {
             this.startDate = startDate;
             this.year = this.startDate.getYear();
         }
     }
 
-    public void updateCardNewsImages(List<String> newImageUrls) {
-        this.cardNewsImageUrls.clear();
-        this.cardNewsImageUrls.addAll(newImageUrls);
+    public MajorEvent toMajorEvent() {
+        return MajorEvent.builder()
+                .writer(this.writer)
+                .eventName(this.eventName)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .year(this.year)
+                .time(this.time)
+                .location(this.location)
+                .notice(this.notice)
+                .googleFormLink(this.googleFormLink)
+                .category(this.category)
+                .cardNewsImageUrls(new ArrayList<>(this.cardNewsImageUrls))
+                .build();
     }
 }
