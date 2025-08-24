@@ -43,10 +43,12 @@ public class ChecklistService {
                 .orElseThrow(() -> new EventChecklistException("체크리스트 아이템을 찾을 수 없습니다. ID: " + itemId));
 
         if (isChecked) {
-            item.uncheck();
-        } else {
             item.check();
+        } else {
+            item.uncheck();
         }
+
+        eventChecklistItemRepository.save(item);
 
         return ChecklistResponseDTO.ItemDTO.builder()
                 .id(item.getId())
