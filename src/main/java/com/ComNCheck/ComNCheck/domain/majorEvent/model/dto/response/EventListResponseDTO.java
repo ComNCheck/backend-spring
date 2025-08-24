@@ -40,7 +40,8 @@ public class EventListResponseDTO {
     public static class EventByYearResponseDTO{
         Long majorEventId;
         String eventName;
-        LocalDate date;
+        LocalDate startDate;
+        LocalDate endDate;
         String location;
         String notice;
         private List<String> cardNewsImageUrls;

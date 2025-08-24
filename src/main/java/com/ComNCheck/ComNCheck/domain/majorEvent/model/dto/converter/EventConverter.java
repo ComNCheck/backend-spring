@@ -80,6 +80,8 @@ public class EventConverter {
                         .eventName(event.getEventName())
                         .location(event.getLocation())
                         .notice(event.getNotice())
+                        .startDate(event.getStartDate())
+                        .endDate(event.getEndDate())
 //                        .date(event.getDate())
                         .cardNewsImageUrls(event.getCardNewsImageUrls())
                         .build()
