@@ -162,9 +162,10 @@ public class MajorEventService {
         boolean isYearExists = (year != null);
         boolean isCategoryExists = (category != null);
 
-        if (!isYearExists && !isCategoryExists) {
-            throw new EventException("조회 조건(연도 또는 카테고리)이 반드시 필요합니다.");
-        }else if (isYearExists && isCategoryExists) {
+//        if (!isYearExists && !isCategoryExists) {
+//            throw new EventException("조회 조건(연도 또는 카테고리)이 반드시 필요합니다.");
+//        }else
+        if (isYearExists && isCategoryExists) {
             throw new EventException("연도별 조회와 카테고리별 조회는 함께 사용할 수 없습니다.");
         }
 
@@ -172,12 +173,14 @@ public class MajorEventService {
 
         if (isYearExists) {
             majorEvents = majorEventRepository.search(year, null);
-        } else{
+        } else if(isCategoryExists){
             List<EventType> categories = EventType.getByFilterCategory(category);
             if(categories.isEmpty()){
                 return Collections.emptyList();
             }
             majorEvents = majorEventRepository.search(null, categories);
+        } else{
+            majorEvents = majorEventRepository.search(null, null);
         }
 
         return EventConverter.toYearlyEventResponse(majorEvents);
