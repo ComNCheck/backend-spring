@@ -4,17 +4,12 @@ import com.ComNCheck.ComNCheck.domain.global.exception.FastApiException;
 import com.ComNCheck.ComNCheck.domain.global.exception.MemberNotFoundException;
 import com.ComNCheck.ComNCheck.domain.global.exception.ValidationException;
 import com.ComNCheck.ComNCheck.domain.global.infrastructure.FastApiClient;
-import com.ComNCheck.ComNCheck.domain.member.model.dto.response.CouncilDTO;
-import com.ComNCheck.ComNCheck.domain.member.model.dto.response.FastApiStudentCardDTO;
+import com.ComNCheck.ComNCheck.domain.member.model.dto.request.GoogleLoginRequestDTO;
+import com.ComNCheck.ComNCheck.domain.member.model.dto.response.*;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.FastApiStudentCardDTO.ExtractedText;
-import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberInformationResponseDTO;
-import com.ComNCheck.ComNCheck.domain.member.model.dto.response.PresidentCouncilResponseDTO;
-import com.ComNCheck.ComNCheck.domain.member.model.dto.response.PresidentDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final FastApiClient fastApiClient;
+    private final GoogleApiService googleApiService;
+
+    public LoginResponseDTO login(GoogleLoginRequestDTO requestDto){
+        return googleApiService.login(requestDto.getAuthorizationCode());
+    }
 
     @Transactional
     public MemberInformationResponseDTO registerStudentNumber(Long id, MultipartFile studentCardImage) {

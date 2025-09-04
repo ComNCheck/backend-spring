@@ -1,8 +1,9 @@
 package com.ComNCheck.ComNCheck.domain.member.controller;
 
+import com.ComNCheck.ComNCheck.domain.member.model.dto.request.GoogleLoginRequestDTO;
+import com.ComNCheck.ComNCheck.domain.member.model.dto.response.LoginResponseDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberInformationResponseDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.PresidentCouncilResponseDTO;
-import com.ComNCheck.ComNCheck.domain.member.service.CustomOAuthMemberService;
 import com.ComNCheck.ComNCheck.domain.member.service.MemberService;
 import com.ComNCheck.ComNCheck.domain.security.handler.CustomSuccessHandler;
 import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
@@ -12,12 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -26,6 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
     private final MemberService memberService;
     private final CustomSuccessHandler customSuccessHandler;
+
+    @PostMapping("/login")
+    @Operation(summary = "로그인 처리", description = "인가 코드를 기반으로 로그인 처리를 한다.")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody GoogleLoginRequestDTO requestDto){
+        return ResponseEntity.ok(memberService.login(requestDto));
+    }
 
     @PostMapping("/student/number")
     @Operation(summary = "학번 등록", description = "모바일 학생증으로 학번을 등록한다.")
