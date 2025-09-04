@@ -51,3 +51,6 @@ jwt:
 target:
   server:
     ip: ${PROD_FASTAPI_IP}
+
+domain:
+  url: ${DOMAIN_ADDR}
