@@ -6,6 +6,7 @@ import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -23,6 +24,9 @@ public class CustomOAuthMemberService extends DefaultOAuth2UserService {
 
     private final static String ADMIN_EMAIL_1 = "comncheck0306@gmail.com";
     private final static String ADMIN_EMAIL_2 = "another0306@gmail.com";
+
+    @Value("${domain.url}")
+    String url;
 
     @Override
     @Transactional
@@ -52,7 +56,7 @@ public class CustomOAuthMemberService extends DefaultOAuth2UserService {
             OAuth2Error oauth2Error = new OAuth2Error(
                     "invalid_hosted_domain",
                     e.getMessage(), // 공통 서비스의 에러 메시지를 그대로 사용
-                    "http://localhost:3000/login?error=invalid_domain"
+                    url + "/login?error=invalid_domain"
             );
             throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString());
         }
