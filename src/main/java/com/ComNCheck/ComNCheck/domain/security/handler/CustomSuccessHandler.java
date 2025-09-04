@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -21,6 +22,9 @@ import org.springframework.stereotype.Component;
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JWTUtil jwtUtil;
+
+    @Value("${domain.url}")
+    String url;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -40,10 +44,10 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addCookie(createCookie("AccessToken", token));
         if(!checkStudentCard) {
-            response.sendRedirect("http://r-cube.iptime.org:3000/login/first"); //https://com-n-check.vercel.app
+            response.sendRedirect(url + "/login/first"); //https://com-n-check.vercel.app
         }
         else {
-            response.sendRedirect("http://r-cube.iptime.org:3000/notice");
+            response.sendRedirect(url + "/notice");
         }
         //response.sendRedirect("http://localhost:3000/login/first");
 

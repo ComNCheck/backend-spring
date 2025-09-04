@@ -7,6 +7,7 @@ import com.ComNCheck.ComNCheck.domain.security.util.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -33,6 +34,9 @@ public class SecurityConfig {
     private final ClientRegistrationRepository clientRegistrationRepository;
     private final OAuth2AuthorizedClientRepository authorizedClientRepository;
 
+    @Value("${domain.url}")
+    String url;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -40,7 +44,7 @@ public class SecurityConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOrigins(Arrays.asList("http://r-cube.iptime.org:3000"));
+                configuration.setAllowedOrigins(Arrays.asList(url));
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowCredentials(true);
                 configuration.setAllowedHeaders(Arrays.asList("*"));
@@ -82,7 +86,7 @@ public class SecurityConfig {
                         userInfoEndpointConfig.userService(customOAuth2MemberService)
                 )
                 .successHandler(customSuccessHandler)
-                .failureHandler(new CustomFailureHandler("http://r-cube.iptime.org:3000/login?error=invalid_domain"))
+                .failureHandler(new CustomFailureHandler(url+ "/login?error=invalid_domain"))
         );
 
         http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
