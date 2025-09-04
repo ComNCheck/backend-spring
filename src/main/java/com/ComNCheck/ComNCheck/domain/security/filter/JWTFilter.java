@@ -11,6 +11,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,19 +36,16 @@ public class JWTFilter extends OncePerRequestFilter {
             "/webjars/**",
             "/login/**",
             "/oauth2/**",
-            "api/v1/**"
+            "/api/v1/**"
     };
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        for (String excludedPath : EXCLUDED_PATHS) {
-            if (pathMatcher.match(excludedPath, path)) {
-                return true;
-            }
-        }
-        return false;
+
+        return Arrays.stream(EXCLUDED_PATHS)
+                .anyMatch(p -> pathMatcher.match(p, path));
     }
 
     @Override

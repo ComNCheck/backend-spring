@@ -11,9 +11,12 @@ spring:
         format_sql: true
         highlight_sql: true
 
-logging.level:
-  org.hibernate:
-    type: trace
-    orm:
-      jdbc:
-        bind: trace
+logging:
+  level:
+    org.hibernate:
+      type: trace
+      orm:
+        jdbc:
+          bind: trace
+    org.springframework.web.client: TRACE
+    org.springframework.http: TRACE
