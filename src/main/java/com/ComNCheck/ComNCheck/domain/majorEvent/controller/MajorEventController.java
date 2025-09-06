@@ -6,7 +6,7 @@ import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.FilterCatego
 import com.ComNCheck.ComNCheck.domain.majorEvent.service.CalenderService;
 import com.ComNCheck.ComNCheck.domain.majorEvent.service.ChecklistService;
 import com.ComNCheck.ComNCheck.domain.majorEvent.service.MajorEventService;
-import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
+import com.ComNCheck.ComNCheck.domain.security.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.List;
@@ -93,9 +93,11 @@ public class MajorEventController {
     public ResponseEntity<ChecklistResponseDTO.MonthlyChecklistDTO> getMonthlyChecklist(
             @RequestParam int startMonth,
             @RequestParam int endMonth,
-            @AuthenticationPrincipal CustomOAuth2Member principal
-
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
+//        Long memberId = principal.getMemberDTO().getMemberId();
+//        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long memberId = principal.getMemberDTO().getMemberId();
 
         return ResponseEntity.ok(checklistService.getMonthlyChecklist(startMonth, endMonth, memberId));
@@ -107,7 +109,9 @@ public class MajorEventController {
     public ResponseEntity<ChecklistResponseDTO.ItemDTO> updateChecklistItemStatus(
             @PathVariable Long itemId,
             @RequestBody ChecklistRequestDTO.CheckStatusUpdate requestDTO,
-            @AuthenticationPrincipal CustomOAuth2Member principal) {
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
+    ) {
 
         Long memberId = principal.getMemberDTO().getMemberId();
 
@@ -122,8 +126,8 @@ public class MajorEventController {
     public ResponseEntity<List<EventListResponseDTO.EventByYearResponseDTO>> getEventsByYear(
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) FilterCategory category,
-            @AuthenticationPrincipal CustomOAuth2Member principal
-
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
         Long memberId = principal.getMemberDTO().getMemberId();
 
@@ -135,8 +139,8 @@ public class MajorEventController {
     @Operation(summary = "임시 행사 저장", description = "새로운 행사를 임시 저장합니다. `multipart/form-data` 형식으로 요청해야 합니다.")
     public ResponseEntity<TempEventResponseDTO> saveTempEvent(
             @ModelAttribute TempEventRequestDTO.Create requestDto,
-            @AuthenticationPrincipal CustomOAuth2Member principal
-
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
         Long memberId = principal.getMemberDTO().getMemberId();
         return ResponseEntity.ok(calenderService.saveTempEvent(requestDto, memberId));
@@ -148,8 +152,8 @@ public class MajorEventController {
     public ResponseEntity<TempEventResponseDTO> updateTempEvent(
             @PathVariable Long tempEventId,
             @ModelAttribute TempEventRequestDTO.Update requestDto,
-            @AuthenticationPrincipal CustomOAuth2Member principal
-
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
         Long memberId = principal.getMemberDTO().getMemberId();
         return ResponseEntity.ok(calenderService.updateTempEvent(tempEventId, requestDto, memberId));
@@ -160,7 +164,8 @@ public class MajorEventController {
     @Operation(summary = "임시 행사 삭제", description = "임시 저장된 행사를 삭제합니다.")
     public ResponseEntity<Void> deleteTempEvent(
             @PathVariable Long tempEventId,
-            @AuthenticationPrincipal CustomOAuth2Member principal
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
         Long memberId = principal.getMemberDTO().getMemberId();
 
@@ -173,7 +178,8 @@ public class MajorEventController {
     @Operation(summary = "임시 행사 최종 제출", description = "선택된 임시 행사들을 최종 확정된 행사로 저장하고, 임시 저장 목록에서 삭제합니다.")
     public ResponseEntity<List<EventResponseDTO>> submitAllTempEvents(
             @RequestBody TempEventRequestDTO.Fix requestDto,
-            @AuthenticationPrincipal CustomOAuth2Member principal
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
         Long memberId = principal.getMemberDTO().getMemberId();
 
@@ -186,7 +192,8 @@ public class MajorEventController {
     public ResponseEntity<List<CalendarResponseDTO>> getCalendarEvents(
             @RequestParam int year,
             @RequestParam int month,
-            @AuthenticationPrincipal CustomOAuth2Member principal
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
         Long memberId = principal.getMemberDTO().getMemberId();
 
@@ -197,7 +204,8 @@ public class MajorEventController {
     @GetMapping("/count")
     @Operation(summary = "남은 행사 갯수 조회", description = "사용자가 작성한 임시 저장 행사 갯수를 조회합니다.")
     public ResponseEntity<EventResponseDTO.Count> getTempEventCount(
-            @AuthenticationPrincipal CustomOAuth2Member principal
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
         Long memberId = principal.getMemberDTO().getMemberId();
 
@@ -210,7 +218,8 @@ public class MajorEventController {
         public ResponseEntity<EventResponseDTO> updateMajorEvent(
             @PathVariable Long majorEventId,
             @ModelAttribute MajorEventRequestDTO.Update requestDTO,
-            @AuthenticationPrincipal CustomOAuth2Member principal
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
         Long memberId = principal.getMemberDTO().getMemberId();
         return ResponseEntity.ok(majorEventService.updateMajorEvent(majorEventId, requestDTO, memberId));
@@ -221,7 +230,8 @@ public class MajorEventController {
     @Operation(summary = "행사 삭제 ", description = "확정된 과행사를 삭제한다. 과회장과 학생회만 삭제할 수 있다.")
     public ResponseEntity<Void> deleteMajorEvent(
             @PathVariable Long majorEventId,
-            @AuthenticationPrincipal CustomOAuth2Member principal
+//            @AuthenticationPrincipal CustomOAuth2Member principal
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
         Long memberId = principal.getMemberDTO().getMemberId();
         majorEventService.deleteMajorEvent(majorEventId, memberId);

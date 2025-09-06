@@ -5,6 +5,7 @@ import com.ComNCheck.ComNCheck.domain.member.model.dto.response.LoginResponseDTO
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberInformationResponseDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.PresidentCouncilResponseDTO;
 import com.ComNCheck.ComNCheck.domain.member.service.MemberService;
+import com.ComNCheck.ComNCheck.domain.security.auth.CustomUserDetails;
 import com.ComNCheck.ComNCheck.domain.security.handler.CustomSuccessHandler;
 import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,8 +51,10 @@ public class MemberController {
 
     @GetMapping
     @Operation(summary = "본인 정보 조회", description = "로그인 이후, 학번 변동 이후 본인 정보를 조회한다.")
-    public ResponseEntity<MemberInformationResponseDTO> getMemberInformation(Authentication authentication) {
-        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
+    public ResponseEntity<MemberInformationResponseDTO> getMemberInformation(
+            @AuthenticationPrincipal CustomUserDetails principal
+    ) {
+//        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long memberId = principal.getMemberDTO().getMemberId();
         MemberInformationResponseDTO responseDTO = memberService.getMemberInformation(memberId);
         return ResponseEntity.ok(responseDTO);
