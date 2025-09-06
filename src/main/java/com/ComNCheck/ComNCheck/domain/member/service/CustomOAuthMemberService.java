@@ -1,4 +1,5 @@
 package com.ComNCheck.ComNCheck.domain.member.service;
+
 import com.ComNCheck.ComNCheck.domain.global.exception.MemberException;
 import com.ComNCheck.ComNCheck.domain.member.model.dto.SocialProfileDTO;
 import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
