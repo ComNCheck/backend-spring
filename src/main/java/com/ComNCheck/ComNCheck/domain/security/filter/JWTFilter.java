@@ -2,7 +2,7 @@ package com.ComNCheck.ComNCheck.domain.security.filter;
 
 import com.ComNCheck.ComNCheck.domain.member.model.dto.response.MemberDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
-import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
+import com.ComNCheck.ComNCheck.domain.security.auth.CustomUserDetails;
 import com.ComNCheck.ComNCheck.domain.security.util.JWTUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -36,8 +36,10 @@ public class JWTFilter extends OncePerRequestFilter {
             "/webjars/**",
             "/login/**",
             "/oauth2/**",
-            "/api/v1/**"
+//            "/api/v1/**"
+            "/api/v1/member/login"
     };
+
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
@@ -54,25 +56,28 @@ public class JWTFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        String token = null;
+//        String token = null;
+//        Cookie[] cookies = request.getCookies();
+//
+//        String path = request.getRequestURI();
+//        System.out.println("path: " + path);
+//        for(Cookie cookie : cookies){
+//            System.out.println("cookie: " + cookie);
+//        }
+//
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if ("AccessToken".equals(cookie.getName())) {
+//                    token = cookie.getValue();
+//                    logger.debug("AccessToken 쿠키를 찾았습니다: " + token);
+//                    break;
+//                }
+//            }
+//        }
 
-        Cookie[] cookies = request.getCookies();
-        String path = request.getRequestURI();
-        System.out.println("path: " + path);
-        for(Cookie cookie : cookies){
-            System.out.println("cookie: " + cookie);
-        }
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("AccessToken".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    logger.debug("AccessToken 쿠키를 찾았습니다: " + token);
-                    break;
-                }
-            }
-        }
-
+        //앱의 경우 헤더에서, 웹의 경우 쿠키에서 토큰 가져옴(둘다 없으면 null 리턴)
+        String token = resolveToken(request);
+        System.out.println("token: " + token);
         try {
             if (token == null || token.trim().isEmpty()) {
                 logger.error("AccessToken 쿠키가 존재하지 않습니다.");
@@ -93,13 +98,15 @@ public class JWTFilter extends OncePerRequestFilter {
             memberDTO.setName(username);
             memberDTO.setRole(role);
 
-            CustomOAuth2Member customOAuth2Member = new CustomOAuth2Member(memberDTO);
+
+            CustomUserDetails customUserDetails = new CustomUserDetails(memberDTO);
 
             Authentication authToken = new UsernamePasswordAuthenticationToken(
-                    customOAuth2Member,
+                    customUserDetails,
                     null,
-                    customOAuth2Member.getAuthorities()
+                    customUserDetails.getAuthorities()
             );
+
             SecurityContextHolder.getContext().setAuthentication(authToken);
             logger.debug("SecurityContext에 사용자 정보를 설정했습니다: " + username);
 
@@ -122,5 +129,34 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+
+        // 1. "앱은 api 통신으로 주고받고" -> Authorization 헤더 확인
+        // 앱에서 보낸 요청은 여기서 토큰을 찾고 바로 반환됩니다.
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            System.out.println("test1");
+            return bearerToken.substring(7);
+        }
+
+        // 2. "웹은 쿠키로 통신하잖아요" -> 쿠키 확인
+        // 웹에서 보낸 요청은 위 if문을 통과하고, 여기서 토큰을 찾게 됩니다.
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("AccessToken".equals(cookie.getName())) {
+                    System.out.println("test2");
+
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        // 3. "쿠키가 있을수도 없을수도 있는게" -> 둘 다 없는 경우
+        // 로그인 전 사용자의 요청은 위 두 로직을 모두 통과하고, 최종적으로 null을 반환합니다.
+        System.out.println("test3");
+        return null;
     }
 }
