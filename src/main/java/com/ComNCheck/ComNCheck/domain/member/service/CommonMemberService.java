@@ -5,15 +5,15 @@ import com.ComNCheck.ComNCheck.domain.member.model.dto.SocialProfileDTO;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Role;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CommonMemberService {
 
@@ -25,6 +25,7 @@ public class CommonMemberService {
     /**
      * 앱/웹 로직에서 공통으로 사용하는 메서드
      */
+    @Transactional
     public Member getOrRegister(SocialProfileDTO profile) {
 
         // 1. 접근 허용 검증 로직

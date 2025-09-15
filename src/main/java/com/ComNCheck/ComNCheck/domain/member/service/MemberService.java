@@ -23,10 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final FastApiClient fastApiClient;
-    private final GoogleApiService googleApiService;
+    private final GoogleAppAuthService googleAppAuthService;
 
+    @Transactional
     public LoginResponseDTO login(GoogleLoginRequestDTO requestDto){
-        return googleApiService.login(requestDto.getAuthorizationCode());
+        return googleAppAuthService.login(requestDto.getIdToken());
     }
 
     @Transactional
