@@ -1,6 +1,7 @@
 package com.ComNCheck.ComNCheck.domain.majorEvent.model.entity;
 
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.EventType;
+import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.HostType;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,6 +33,10 @@ public class TempMajorEvent {
     @Column(name = "event_category", nullable = false)
     private EventType category;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "host_category", nullable = false)
+    private HostType hostType;
+
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
@@ -62,6 +67,7 @@ public class TempMajorEvent {
     public void update(
             String eventName,
             EventType category,
+            HostType hostType,
             LocalDate startDate,
             LocalDate endDate,
             LocalTime time,
@@ -72,6 +78,8 @@ public class TempMajorEvent {
     ) {
         this.eventName = eventName;
         this.category = category;
+        this.hostType = hostType;
+        this.startDate = startDate;
         this.endDate = endDate;
         this.time = time;
         this.location = location;
@@ -98,7 +106,16 @@ public class TempMajorEvent {
                 .notice(this.notice)
                 .googleFormLink(this.googleFormLink)
                 .category(this.category)
+                .hostType(this.hostType)
                 .cardNewsImageUrls(new ArrayList<>(this.cardNewsImageUrls))
                 .build();
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public void setCategory(EventType category) {
+        this.category = category;
     }
 }

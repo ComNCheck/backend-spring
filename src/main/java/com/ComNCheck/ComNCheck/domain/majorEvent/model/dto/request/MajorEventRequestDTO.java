@@ -1,6 +1,7 @@
 package com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request;
 
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.EventType;
+import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.HostType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,10 @@ public class MajorEventRequestDTO {
         private String eventName;
         @Schema(description = "행사 카테고리(Enum 타입의 이름)", example = "MT")
         private EventType category;
+
+        @Schema(description = "주최 유형(Enum 타입의 이름)", example = "COMPUTER_SCIENCE", defaultValue = "COMPUTER_SCIENCE")
+        private HostType hostType;
+
         private String location;
         private String notice;
         private String googleFormLink;

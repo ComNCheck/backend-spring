@@ -1,6 +1,7 @@
 package com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request;
 
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.EventType;
+import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.HostType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TempEventRequestDTO {
@@ -17,8 +19,11 @@ public class TempEventRequestDTO {
     public static abstract class TempEventCommonRequest {
         private String eventName;
 
-        @Schema(description = "행사 카테고리(Enum 타입의 이름)", example = "MT", defaultValue = "ETC")
+        @Schema(description = "행사 카테고리(Enum 타입의 이름)", example = "MT", defaultValue = "MT")
         private EventType category;
+
+        @Schema(description = "주최 유형(Enum 타입의 이름)", example = "COMPUTER_SCIENCE", defaultValue = "COMPUTER_SCIENCE")
+        private HostType hostType;
 
         private String location;
         private String notice;
@@ -39,7 +44,7 @@ public class TempEventRequestDTO {
     @Getter
     @Setter
     public static class Create extends TempEventCommonRequest {
-        private List<MultipartFile> cardNewsImages;
+        private List<MultipartFile> cardNewsImages = new ArrayList<>();
     }
 
     @Getter

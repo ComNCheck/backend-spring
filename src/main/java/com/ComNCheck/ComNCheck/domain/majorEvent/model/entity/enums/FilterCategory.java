@@ -9,5 +9,6 @@ public enum FilterCategory {
     KICK_OFF, //해오름식
     SPORTS_DAY,     //체전
     FESTIVAL,        //축제
-    HOME_COMING_DAY //홈커밍데이
+    HOME_COMING_DAY, //홈커밍데이
+    ETC //임의의 행사
 }

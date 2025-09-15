@@ -24,7 +24,8 @@ public enum EventType {
     COLLEGE_SPORTS_DAY("공대 체전", FilterCategory.SPORTS_DAY),
     UNIVERSITY_SPORTS_DAY("왕산 체전", FilterCategory.SPORTS_DAY),
     FESTIVAL("축제", FilterCategory.FESTIVAL),
-    HOMECOMING_DAY("홈커밍 데이", FilterCategory.HOME_COMING_DAY);
+    HOMECOMING_DAY("홈커밍 데이", FilterCategory.HOME_COMING_DAY),
+    ETC("임의의 행사", FilterCategory.ETC);
 
     private final String displayName;
     private final FilterCategory filterCategory;

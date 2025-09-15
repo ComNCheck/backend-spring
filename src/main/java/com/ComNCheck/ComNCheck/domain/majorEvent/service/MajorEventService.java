@@ -214,6 +214,7 @@ public class MajorEventService {
         majorEvent.update(
                 requestDto.getEventName(),
                 requestDto.getCategory(),
+                requestDto.getHostType(),
                 requestDto.getStartDate(),
                 requestDto.getEndDate(),
                 LocalTime.parse(requestDto.getTime()),

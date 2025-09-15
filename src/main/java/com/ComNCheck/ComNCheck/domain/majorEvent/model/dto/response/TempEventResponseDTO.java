@@ -17,6 +17,7 @@ public class TempEventResponseDTO {
     private Long tempEventId;
     private String eventName;
     private String category;
+    private String hostType;
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalTime time;
@@ -26,10 +27,14 @@ public class TempEventResponseDTO {
     private List<String> cardNewsImageUrls;
 
     public static TempEventResponseDTO from(TempMajorEvent event) {
+        String category = event.getCategory() != null ? event.getCategory().name() : null;
+        String hostType = event.getHostType() != null ? event.getHostType().name() : null;
+
         return TempEventResponseDTO.builder()
                 .tempEventId(event.getId())
                 .eventName(event.getEventName())
-                .category(event.getCategory().name()) // Enum -> String
+                .category(category) // Enum -> String
+                .hostType(hostType)
                 .startDate(event.getStartDate())
                 .endDate(event.getEndDate())
                 .time(event.getTime())
