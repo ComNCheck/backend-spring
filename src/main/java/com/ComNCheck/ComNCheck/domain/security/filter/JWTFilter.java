@@ -19,9 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Component
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
@@ -36,7 +38,6 @@ public class JWTFilter extends OncePerRequestFilter {
             "/webjars/**",
             "/login/**",
             "/oauth2/**",
-//            "/api/v1/**"
             "/api/v1/member/login"
     };
 
@@ -45,6 +46,7 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
+        System.out.println("path: " + path);
 
         return Arrays.stream(EXCLUDED_PATHS)
                 .anyMatch(p -> pathMatcher.match(p, path));
@@ -55,25 +57,6 @@ public class JWTFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-
-//        String token = null;
-//        Cookie[] cookies = request.getCookies();
-//
-//        String path = request.getRequestURI();
-//        System.out.println("path: " + path);
-//        for(Cookie cookie : cookies){
-//            System.out.println("cookie: " + cookie);
-//        }
-//
-//        if (cookies != null) {
-//            for (Cookie cookie : cookies) {
-//                if ("AccessToken".equals(cookie.getName())) {
-//                    token = cookie.getValue();
-//                    logger.debug("AccessToken 쿠키를 찾았습니다: " + token);
-//                    break;
-//                }
-//            }
-//        }
 
         //앱의 경우 헤더에서, 웹의 경우 쿠키에서 토큰 가져옴(둘다 없으면 null 리턴)
         String token = resolveToken(request);
@@ -133,30 +116,22 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private String resolveToken(HttpServletRequest request) {
 
-        // 1. "앱은 api 통신으로 주고받고" -> Authorization 헤더 확인
-        // 앱에서 보낸 요청은 여기서 토큰을 찾고 바로 반환됩니다.
+        //앱 -> 헤더 검증
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            System.out.println("test1");
             return bearerToken.substring(7);
         }
 
-        // 2. "웹은 쿠키로 통신하잖아요" -> 쿠키 확인
-        // 웹에서 보낸 요청은 위 if문을 통과하고, 여기서 토큰을 찾게 됩니다.
+        //웹 -> 쿠키 검증
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("AccessToken".equals(cookie.getName())) {
-                    System.out.println("test2");
-
                     return cookie.getValue();
                 }
             }
         }
 
-        // 3. "쿠키가 있을수도 없을수도 있는게" -> 둘 다 없는 경우
-        // 로그인 전 사용자의 요청은 위 두 로직을 모두 통과하고, 최종적으로 null을 반환합니다.
-        System.out.println("test3");
         return null;
     }
 }
