@@ -59,6 +59,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
+    @ExceptionHandler(TempEventException.class)
+    public ResponseEntity<String> handleTempMajorEventException(TempEventException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(GoogleException.class)
+    public ResponseEntity<String> handleGoogleException(GoogleException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
     public static class ErrorResponse {
         private int status;
         private String message;
