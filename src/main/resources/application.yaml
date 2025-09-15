@@ -54,3 +54,11 @@ target:
 
 domain:
   url: ${DOMAIN_ADDR}
+
+app:
+  oauth2:
+    google:
+      client-ids:
+        - "${ANDROID_GOOGLE_CLIENT_ID}"
+        - "${IOS_GOOGLE_CLIENT_ID}"
+        - "${APP_GOOGLE_CLIENT_ID}"
