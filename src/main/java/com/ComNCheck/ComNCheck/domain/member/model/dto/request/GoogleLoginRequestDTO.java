@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class GoogleLoginRequestDTO {
-    private String authorizationCode;
+    private String idToken;
 }
