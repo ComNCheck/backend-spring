@@ -1,6 +1,7 @@
 package com.ComNCheck.ComNCheck.domain.majorEvent.model.entity;
 
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.EventType;
+import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.HostType;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
 import jakarta.persistence.*;
 
@@ -21,12 +22,16 @@ public class MajorEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "event_name", nullable = false)
+    @Column(name = "event_name")
     private String eventName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "event_category", nullable = false)
+    @Column(name = "event_category")
     private EventType category;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "host_category", nullable = false)
+    private HostType hostType;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -84,6 +89,7 @@ public class MajorEvent {
     public void update(
             String eventName,
             EventType category,
+            HostType hostType,
             LocalDate startDate,
             LocalDate endDate,
 //            LocalDate date,
@@ -96,6 +102,7 @@ public class MajorEvent {
     ) {
         this.eventName = eventName;
         this.category = category;
+        this.hostType = hostType;
         this.startDate = startDate;
         this.endDate = endDate;
 //        this.date = date;
