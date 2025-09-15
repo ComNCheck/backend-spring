@@ -4,6 +4,7 @@ import com.ComNCheck.ComNCheck.domain.global.config.gcp.ImageManager;
 import com.ComNCheck.ComNCheck.domain.global.config.validator.MemberValidator;
 import com.ComNCheck.ComNCheck.domain.global.exception.EventException;
 import com.ComNCheck.ComNCheck.domain.global.exception.MemberNotFoundException;
+import com.ComNCheck.ComNCheck.domain.global.exception.TempEventException;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.converter.EventConverter;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request.TempEventRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.response.CalendarResponseDTO;
@@ -11,6 +12,7 @@ import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.response.EventRespons
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.response.TempEventResponseDTO;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.MajorEvent;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.TempMajorEvent;
+import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.EventType;
 import com.ComNCheck.ComNCheck.domain.majorEvent.repository.MajorEventRepository;
 import com.ComNCheck.ComNCheck.domain.majorEvent.repository.TempMajorEventRepository;
 import com.ComNCheck.ComNCheck.domain.member.model.entity.Member;
@@ -19,6 +21,8 @@ import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -50,23 +54,48 @@ public class CalenderService {
 
     @Transactional
     public TempEventResponseDTO saveTempEvent(TempEventRequestDTO.Create requestDto, Long memberId) {
+        if(requestDto.getHostType() == null){
+            throw new TempEventException("hostCategory 입력은 필수입니다.");
+        }
+
         Member member = memberValidator.findMemberAndCheckRole(memberId);
 
-        List<String> imageUrls = imageManager.uploadImagesToGcs(requestDto.getCardNewsImages());
+        // 카테고리 지정했을 때
+        String eventName;
+        EventType category = requestDto.getCategory();
+
+        if ((category == EventType.ETC || category == null) && !StringUtils.hasText(requestDto.getEventName())) {
+            throw new TempEventException("기타(ETC) 카테고리를 선택했거나 카테고리가 없는 경우, 행사 이름(eventName)은 필수입니다.");
+        }
+
+        if (category != null && category != EventType.ETC) {
+            eventName = requestDto.getCategory().getDisplayName();
+        }else{
+            eventName = requestDto.getEventName();
+        }
+
+        List<MultipartFile> cardNewsImages = requestDto.getCardNewsImages();
+
+        List<String> imageUrls = new ArrayList<>();
+
+        if (cardNewsImages != null && !cardNewsImages.isEmpty()) {
+            imageUrls = imageManager.uploadImagesToGcs(cardNewsImages);
+        }
 
         TempMajorEvent tempEvent = TempMajorEvent.builder()
-                .eventName(requestDto.getEventName())
-                .category(requestDto.getCategory())
-                .location(requestDto.getLocation())
-                .notice(requestDto.getNotice())
-                .googleFormLink(requestDto.getGoogleFormLink())
-                .startDate(requestDto.getStartDate())
-                .endDate(requestDto.getEndDate())
-                .year(requestDto.getStartDate().getYear())
-                .time(LocalTime.parse(requestDto.getTime()))
-                .cardNewsImageUrls(imageUrls)
-                .writer(member)
-                .build();
+        .eventName(eventName)
+        .category(requestDto.getCategory())
+        .hostType(requestDto.getHostType())
+        .location(requestDto.getLocation())
+        .notice(requestDto.getNotice())
+        .googleFormLink(requestDto.getGoogleFormLink())
+        .startDate(requestDto.getStartDate())
+        .endDate(requestDto.getEndDate())
+        .year(requestDto.getStartDate().getYear())
+        .time(LocalTime.parse(requestDto.getTime()))
+        .cardNewsImageUrls(imageUrls)
+        .writer(member)
+        .build();
 
         tempMajorEventRepository.save(tempEvent);
         return from(tempEvent);
@@ -95,6 +124,7 @@ public class CalenderService {
         tempEvent.update(
                 requestDto.getEventName(),
                 requestDto.getCategory(),
+                requestDto.getHostType(),
                 requestDto.getStartDate(),
                 requestDto.getEndDate(),
                 LocalTime.parse(requestDto.getTime()),
