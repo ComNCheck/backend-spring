@@ -43,13 +43,13 @@ public class TempEventRequestDTO {
 
     @Getter
     @Setter
-    public static class Create extends TempEventCommonRequest {
+    public static class TempEventCreate extends TempEventCommonRequest {
         private List<MultipartFile> cardNewsImages = new ArrayList<>();
     }
 
     @Getter
     @Setter
-    public static class Update extends TempEventCommonRequest {
+    public static class TempEventUpdate extends TempEventCommonRequest {
         private List<String> existingImageUrls;
         private List<MultipartFile> newImages;
     }

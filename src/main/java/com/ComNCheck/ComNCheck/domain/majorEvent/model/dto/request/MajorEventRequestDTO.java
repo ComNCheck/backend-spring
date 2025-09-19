@@ -47,8 +47,8 @@ public class MajorEventRequestDTO {
 
     @Getter
     @Setter
-    public static class Update extends EventCommonRequest {
-        private Long majorEventId;
+    public static class MajorEventUpdate extends EventCommonRequest {
+//        private Long majorEventId;
         private List<String> existingImageUrls;
         private List<MultipartFile> newImages;
     }

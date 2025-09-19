@@ -4,6 +4,7 @@ import com.ComNCheck.ComNCheck.domain.fcm.service.FcmService;
 import com.ComNCheck.ComNCheck.domain.global.config.gcp.ImageManager;
 import com.ComNCheck.ComNCheck.domain.global.config.validator.MemberValidator;
 import com.ComNCheck.ComNCheck.domain.global.exception.EventException;
+import com.ComNCheck.ComNCheck.domain.global.exception.PostNotFoundException;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.converter.EventConverter;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request.MajorEventRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.response.EventListResponseDTO;
@@ -11,13 +12,18 @@ import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.response.EventRespons
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.MajorEvent;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.EventType;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.FilterCategory;
+import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.HostType;
 import com.ComNCheck.ComNCheck.domain.majorEvent.repository.EventChecklistRepository;
 import com.ComNCheck.ComNCheck.domain.majorEvent.repository.MajorEventRepository;
 import com.ComNCheck.ComNCheck.domain.majorEvent.repository.TempMajorEventRepository;
 import com.ComNCheck.ComNCheck.domain.member.repository.MemberRepository;
 import com.google.cloud.storage.Storage;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -90,32 +96,40 @@ public class MajorEventService {
 //        return EventResponseDTO.of(savedMajorEvent);
 //    }
 
-//    public EventResponseDTO getMajorEvent(Long majorEventId) {
-//        MajorEvent majorEvent = majorEventRepository.findById(majorEventId)
-//                .orElseThrow(() -> new PostNotFoundException("요청하신 학부 행사가 없습니다."));
-//        return EventResponseDTO.of(majorEvent);
-//    }
+    public EventResponseDTO.EventDTO getMajorEvent(Long majorEventId) {
+        MajorEvent majorEvent = majorEventRepository.findById(majorEventId)
+                .orElseThrow(() -> new PostNotFoundException("요청하신 학부 행사가 없습니다."));
+
+        return EventResponseDTO.toEventDto(majorEvent);
+    }
 //
-//    public List<EventListResponseDTO> getAllMajorEventsNotPassed() {
-//        // 코드 상에서 정렬 보다는 디비에서 정렬하고 보내는 것이 더 효율적일꺼같음 추후 리펙토링 필요
-//        List<MajorEvent> all = majorEventRepository.findAll();
-//
-//        LocalDate today = LocalDate.now();
-//        LocalTime currentTime = LocalTime.now();
-//
-////        List<MajorEvent> filtered = all.stream() // 기간 지난 행사 제외
-////                .filter(e -> isNotPassed(e, today, currentTime))
-////                .collect(Collectors.toList());
+    public List<EventListResponseDTO.AllEventsDTO> getAllMajorEventsNotPassed(HostType hostCategory) {
+        // 코드 상에서 정렬 보다는 디비에서 정렬하고 보내는 것이 더 효율적일꺼같음 추후 리펙토링 필요
+        List<MajorEvent> all = majorEventRepository.findAll();
+
+        LocalDate today = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+
+//        List<MajorEvent> filtered = all.stream() // 기간 지난 행사 제외
+//                .filter(e -> isNotPassed(e, today, currentTime))
+//                .collect(Collectors.toList());
+
+        List<MajorEvent> events = majorEventRepository.findNotPassedEventsByHostCategory(today, currentTime, hostCategory);
+
+        return events.stream()
+                .map(EventListResponseDTO::toMajorEventNotPassed)
+                .collect(Collectors.toList());
 //        all.sort(
+//
 //                Comparator
-//                        .comparing(MajorEvent::getDate, Comparator.reverseOrder())  // 날짜 내림차순
+//                        .comparing(MajorEvent::getStartDate, Comparator.reverseOrder())  // 날짜 내림차순
 //                        .thenComparing(MajorEvent::getTime, Comparator.reverseOrder()) // 시간 내림차순
 //        );
 //
 //        return all.stream()
-//                .map(EventListResponseDTO::of)
+//                .map(EventListResponseDTO::toMajorEventNotPassed)
 //                .collect(Collectors.toList());
-//    }
+    }
 
 //    @Transactional
 //    public EventResponseDTO updateMajorEvent(Long majorEventId, EventUpdateRequestDTO requestDTO, Long memberId) {
@@ -193,7 +207,7 @@ public class MajorEventService {
     }
 
     @Transactional
-    public EventResponseDTO updateMajorEvent(Long eventId, MajorEventRequestDTO.Update requestDto, Long memberId) {
+    public EventResponseDTO updateMajorEvent(Long eventId, MajorEventRequestDTO.MajorEventUpdate requestDto, Long memberId) {
         memberValidator.findMemberAndCheckRole(memberId);
 
         MajorEvent majorEvent = majorEventRepository.findById(eventId)

@@ -3,6 +3,7 @@ package com.ComNCheck.ComNCheck.domain.majorEvent.controller;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.request.*;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.dto.response.*;
 import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.FilterCategory;
+import com.ComNCheck.ComNCheck.domain.majorEvent.model.entity.enums.HostType;
 import com.ComNCheck.ComNCheck.domain.majorEvent.service.CalenderService;
 import com.ComNCheck.ComNCheck.domain.majorEvent.service.ChecklistService;
 import com.ComNCheck.ComNCheck.domain.majorEvent.service.MajorEventService;
@@ -38,20 +39,20 @@ public class MajorEventController {
 //    }
 
 
-//    @GetMapping("/{majorEventId}")
-//    @Operation(summary = "특정 과행사 게시글 조회", description = "특정 과행사 게시글을 조회한다.")
-//    public ResponseEntity<EventResponseDTO> getMajorEvent(@PathVariable Long majorEventId) {
-//        EventResponseDTO responseDTO = majorEventService.getMajorEvent(majorEventId);
-//        return ResponseEntity.ok(responseDTO);
-//    }
+    @GetMapping("/{majorEventId}")
+    @Operation(summary = "특정 과행사 게시글 조회", description = "특정 과행사 게시글을 조회한다.")
+    public ResponseEntity<EventResponseDTO.EventDTO> getMajorEvent(
+            @PathVariable Long majorEventId) {
+        return ResponseEntity.ok(majorEventService.getMajorEvent(majorEventId));
+    }
 
 
-//    @GetMapping
-//    @Operation(summary = "과행사 게시글 목록 조회", description = "과행사 게시글 목록을 조회한다. 이미 지난 행사는 보여주지 않는다.")
-//    public ResponseEntity<List<EventListResponseDTO>> getAllMajorEventsNotPassed() {
-//        List<EventListResponseDTO> allMajorEventsNotPassed = majorEventService.getAllMajorEventsNotPassed();
-//        return ResponseEntity.ok(allMajorEventsNotPassed);
-//    }
+    @GetMapping
+    @Operation(summary = "과행사 게시글 목록 조회", description = "과행사 게시글 목록을 조회한다. 이미 지난 행사는 보여주지 않는다.")
+    public ResponseEntity<List<EventListResponseDTO.AllEventsDTO>> getAllMajorEventsNotPassed(@RequestParam HostType hostCategory) {
+        List<EventListResponseDTO.AllEventsDTO> allMajorEventsNotPassed = majorEventService.getAllMajorEventsNotPassed(hostCategory);
+        return ResponseEntity.ok(allMajorEventsNotPassed);
+    }
 
 
 //    @PutMapping("/{majorEventId}")
@@ -138,7 +139,7 @@ public class MajorEventController {
     @PostMapping(value = "/temp", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "임시 행사 저장", description = "새로운 행사를 임시 저장합니다. `multipart/form-data` 형식으로 요청해야 합니다.")
     public ResponseEntity<TempEventResponseDTO> saveTempEvent(
-            @ModelAttribute TempEventRequestDTO.Create requestDto,
+            @ModelAttribute TempEventRequestDTO.TempEventCreate requestDto,
 //            @AuthenticationPrincipal CustomOAuth2Member principal
             @AuthenticationPrincipal CustomUserDetails principal
     ) {
@@ -151,7 +152,7 @@ public class MajorEventController {
     @Operation(summary = "임시 행사 수정", description = "임시 저장된 행사의 내용을 수정합니다. `multipart/form-data` 형식으로 요청해야 합니다.")
     public ResponseEntity<TempEventResponseDTO> updateTempEvent(
             @PathVariable Long tempEventId,
-            @ModelAttribute TempEventRequestDTO.Update requestDto,
+            @ModelAttribute TempEventRequestDTO.TempEventUpdate requestDto,
 //            @AuthenticationPrincipal CustomOAuth2Member principal
             @AuthenticationPrincipal CustomUserDetails principal
     ) {
@@ -217,7 +218,7 @@ public class MajorEventController {
     @Operation(summary = "행사 수정", description = "확정된 과행사를 수정한다. 과회장과 학생회만 수정할 수 있다.")
         public ResponseEntity<EventResponseDTO> updateMajorEvent(
             @PathVariable Long majorEventId,
-            @ModelAttribute MajorEventRequestDTO.Update requestDTO,
+            @ModelAttribute MajorEventRequestDTO.MajorEventUpdate requestDTO,
 //            @AuthenticationPrincipal CustomOAuth2Member principal
             @AuthenticationPrincipal CustomUserDetails principal
     ) {

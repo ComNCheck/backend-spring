@@ -53,7 +53,7 @@ public class CalenderService {
     );
 
     @Transactional
-    public TempEventResponseDTO saveTempEvent(TempEventRequestDTO.Create requestDto, Long memberId) {
+    public TempEventResponseDTO saveTempEvent(TempEventRequestDTO.TempEventCreate requestDto, Long memberId) {
         if(requestDto.getHostType() == null){
             throw new TempEventException("hostCategory 입력은 필수입니다.");
         }
@@ -102,7 +102,7 @@ public class CalenderService {
     }
 
     @Transactional
-    public TempEventResponseDTO updateTempEvent(Long tempEventId, TempEventRequestDTO.Update requestDto, Long memberId) {
+    public TempEventResponseDTO updateTempEvent(Long tempEventId, TempEventRequestDTO.TempEventUpdate requestDto, Long memberId) {
         memberValidator.findMemberAndCheckRole(memberId);
 
         TempMajorEvent tempEvent = tempMajorEventRepository.findById(tempEventId)
