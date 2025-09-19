@@ -69,6 +69,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
+    @ExceptionHandler(SuggestedEventException.class)
+    public ResponseEntity<String> handleSuggestedEventException(SuggestedEventException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(EventLikeException.class)
+    public ResponseEntity<String> handleEventLikeException(EventLikeException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
     public static class ErrorResponse {
         private int status;
         private String message;
