@@ -35,6 +35,17 @@ public class EventListResponseDTO {
                 .build();
     }
 
+    public static AllEventsDTO toMajorEventNotPassed(MajorEvent majorEvent) {
+        return AllEventsDTO.builder()
+                .id(majorEvent.getId())
+                .eventName(majorEvent.getEventName())
+                .date(majorEvent.getStartDate())
+                .time(majorEvent.getTime())
+//                .googleFormLink(majorEvent.getGoogleFormLink())
+                .location(majorEvent.getLocation())
+                .build();
+    }
+
     @Getter
     @Builder
     public static class EventByYearResponseDTO{
@@ -45,6 +56,17 @@ public class EventListResponseDTO {
         String location;
         String notice;
         private List<String> cardNewsImageUrls;
+    }
+
+    @Getter
+    @Builder
+    public static class AllEventsDTO{
+        Long id;
+        String eventName;
+        private LocalDate date;
+        private LocalTime time;
+//        private String googleFormLink;
+        private String location;
     }
 
 }

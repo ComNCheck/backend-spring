@@ -54,9 +54,25 @@ public class EventResponseDTO {
                 .build();
     }
 
+    public static EventDTO toEventDto(MajorEvent majorEvent) {
+        return EventDTO.builder()
+                .cardNewsImageUrls(majorEvent.getCardNewsImageUrls())
+                .googleFormLink(majorEvent.getGoogleFormLink())
+                .notice(majorEvent.getNotice())
+                .build();
+    }
+
     @Getter
     @Builder
     public static class Count{
         private Long count;
+    }
+
+    @Getter
+    @Builder
+    public static class EventDTO{
+        private List<String> cardNewsImageUrls;
+        private String notice;
+        private String googleFormLink;
     }
 }
