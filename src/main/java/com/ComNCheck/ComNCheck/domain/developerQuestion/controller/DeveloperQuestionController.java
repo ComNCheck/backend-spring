@@ -4,13 +4,13 @@ package com.ComNCheck.ComNCheck.domain.developerQuestion.controller;
 import com.ComNCheck.ComNCheck.domain.developerQuestion.model.dto.request.DeveloperQuestionRequestDTO;
 import com.ComNCheck.ComNCheck.domain.developerQuestion.model.dto.response.DeveloperQuestionResponseDTO;
 import com.ComNCheck.ComNCheck.domain.developerQuestion.service.DeveloperQuestionService;
-import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
+import com.ComNCheck.ComNCheck.domain.security.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,9 +31,8 @@ public class DeveloperQuestionController {
     @Operation(summary = "개발자 질문 게시글 작성", description = "개발자에게 질문글을 작성할 수 있다.")
     public ResponseEntity<DeveloperQuestionResponseDTO> createDeveloperQuestion(
             @RequestBody DeveloperQuestionRequestDTO requestDTO,
-            Authentication authentication
+            @AuthenticationPrincipal CustomUserDetails principal
             ) {
-        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long memberId = principal.getMemberDTO().getMemberId();
         DeveloperQuestionResponseDTO createdDTO = developerQuestionService
                 .createDeveloperQuestion(memberId, requestDTO);
@@ -62,9 +61,8 @@ public class DeveloperQuestionController {
     public ResponseEntity<DeveloperQuestionResponseDTO> updateDeveloperQuestion(
             @PathVariable Long developerQuestionId,
             @RequestBody DeveloperQuestionResponseDTO requestDTO,
-            Authentication authentication
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
-        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long writerId = principal.getMemberDTO().getMemberId();
         DeveloperQuestionResponseDTO updatedDTO =
                 developerQuestionService.updateDeveloperQuestion(developerQuestionId, requestDTO, writerId);
@@ -76,9 +74,8 @@ public class DeveloperQuestionController {
     @Operation(summary = "개발자 질문 게시글 삭제", description = "개발자 질문 게시글을 삭제한다.")
     public ResponseEntity<Void> deleteDeveloperQuestion(
             @PathVariable Long developerQuestionId,
-            Authentication authentication
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
-        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long writerId = principal.getMemberDTO().getMemberId();
         developerQuestionService.deleteDeveloperQuestion(developerQuestionId, writerId);
         return ResponseEntity.noContent().build();
@@ -87,9 +84,8 @@ public class DeveloperQuestionController {
     @GetMapping("/my")
     @Operation(summary = "내가 쓴 개발자 질문 게시글 보기", description = "내가 쓴 글만 조회한다.")
     public ResponseEntity<List<DeveloperQuestionResponseDTO>> getAllMyDeveloperQuestion(
-            Authentication authentication
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
-        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long writerId = principal.getMemberDTO().getMemberId();
         List<DeveloperQuestionResponseDTO> developerQuestions = developerQuestionService.getAllMyDeveloperQuestion(writerId);
         return ResponseEntity.ok(developerQuestions);
