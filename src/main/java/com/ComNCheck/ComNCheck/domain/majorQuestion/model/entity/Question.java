@@ -35,7 +35,7 @@ public class Question {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "content")
     private String content;
 
     @Column(nullable = false)
@@ -63,7 +63,7 @@ public class Question {
 
     public void updateQuestion(QuestionRequestDTO dto) {
         this.title = dto.getTitle();
-        this.content = dto.getContent();
+//        this.content = dto.getContent();
         this.shared = dto.isShared();
         this.updatedAt = LocalDateTime.now();
     }
