@@ -4,12 +4,14 @@ import com.ComNCheck.ComNCheck.domain.majorQuestion.model.dto.request.AnswerRequ
 import com.ComNCheck.ComNCheck.domain.majorQuestion.model.dto.request.AnswerUpdateRequestDTO;
 import com.ComNCheck.ComNCheck.domain.majorQuestion.model.dto.response.AnswerResponseDTO;
 import com.ComNCheck.ComNCheck.domain.majorQuestion.service.AnswerService;
+import com.ComNCheck.ComNCheck.domain.security.auth.CustomUserDetails;
 import com.ComNCheck.ComNCheck.domain.security.oauth.CustomOAuth2Member;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,9 +24,9 @@ public class AnswerController {
     @Operation(summary = "FAQ 댓글 작성", description = "학생회권한만 댓글을 달 수 있다.")
     public ResponseEntity<AnswerResponseDTO> createOrUpdateAnswer(
             @RequestBody AnswerRequestDTO requestDTO,
-            Authentication authentication
+            @AuthenticationPrincipal CustomUserDetails principal
+
     ) {
-        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long writerId = principal.getMemberDTO().getMemberId();
 
         AnswerResponseDTO responseDTO = answerService.createOrUpdateAnswer(requestDTO, writerId);
@@ -36,10 +38,10 @@ public class AnswerController {
     public ResponseEntity<AnswerResponseDTO> updateAnswer(
             @PathVariable Long answerId,
             @RequestBody AnswerUpdateRequestDTO answerUpdateRequestDTO,
-            Authentication authentication
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
-        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long writerId = principal.getMemberDTO().getMemberId();
+
         AnswerResponseDTO responseDTO = answerService.updateAnswer(answerId, answerUpdateRequestDTO.getContent(), writerId);
         return ResponseEntity.ok(responseDTO);
     }
@@ -48,11 +50,10 @@ public class AnswerController {
     @Operation(summary = "FAQ 댓글 삭제", description = "학생회권한만 작성자의 관계없이 댓글 삭제가 가능하다")
     public ResponseEntity<Void> deleteAnswer(
             @PathVariable Long answerId,
-            Authentication authentication
+            @AuthenticationPrincipal CustomUserDetails principal
     ) {
-        CustomOAuth2Member principal = (CustomOAuth2Member) authentication.getPrincipal();
         Long writerId = principal.getMemberDTO().getMemberId();
         answerService.deleteAnswer(answerId, writerId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }
