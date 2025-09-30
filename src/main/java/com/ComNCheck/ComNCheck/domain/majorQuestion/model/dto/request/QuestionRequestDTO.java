@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class QuestionRequestDTO {
     private String title;
-    private String content;
+//    private String content;
     private boolean shared;
 }

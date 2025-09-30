@@ -10,25 +10,25 @@ import lombok.Getter;
 public class QuestionResponseDTO {
     private Long majorQuestionId;
     private String title;
-    private String content;
+//    private String content;
     //private Long writerId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private AnswerResponseDTO answer;
+//    private AnswerResponseDTO answer;
     private boolean shared;
 
     public static QuestionResponseDTO of(Question question) {
         return QuestionResponseDTO.builder()
                 .majorQuestionId(question.getId())
                 .title(question.getTitle())
-                .content(question.getContent())
+//                .content(question.getContent())
                 .shared(question.isShared())
                 //.writerId(question.getWriter().getId())
                 .createdAt(question.getCreatedAt())
                 .updatedAt(question.getUpdatedAt())
-                .answer(
-                        question.getAnswer() != null ? AnswerResponseDTO.of(question.getAnswer()) : null
-                )
+//                .answer(
+//                        question.getAnswer() != null ? AnswerResponseDTO.of(question.getAnswer()) : null
+//                )
                 .build();
     }
 }

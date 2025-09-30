@@ -32,7 +32,7 @@ public class QuestionService {
 
         Question question = Question.builder()
                 .title(requestDTO.getTitle())
-                .content(requestDTO.getContent())
+//                .content(requestDTO.getContent())
                 .shared(requestDTO.isShared())
                 .writer(writer)
                 .build();
